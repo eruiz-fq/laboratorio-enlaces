@@ -1140,7 +1140,7 @@
   <!-- Bottom Discreet Text-Only Credits -->
   <footer class="copyright-footer">
     <p class="copyright-text-discreet">
-      © <strong>Elena Ruiz Alfaro</strong> · Dpto. Física y Química · BAT_FQ · IEDIB
+      © 2026 Elena Ruiz Alfaro · Dpto. Física y Química · IEDIB
     </p>
   </footer>
 
@@ -1201,7 +1201,7 @@
         </div>
 
         <div style="margin-top: 1.5rem; text-align: center; font-size: 0.75rem; color: #94a3b8; border-top: 1px solid var(--border); padding-top: 0.65rem;">
-          © Elena Ruiz Alfaro · Aplicació didàctica física i química · IEDIB
+          © 2026 Elena Ruiz Alfaro · Aplicació didàctica física i química · IEDIB
         </div>
       </div>
       <div class="modal-footer">
@@ -2660,8 +2660,8 @@
       <body>
         <div class="report-header">
           <div>
-            <h1>EnllaçAR - Laboratori d'Enllaç Químic i Propietats</h1>
-            <p>Física i Química (BAT_FQ) — Dpto. Física y Química — Elena Ruiz Alfaro</p>
+            <h1>EnllaçAR </h1>
+            <p>Dpto. Física y Química — Elena Ruiz Alfaro</p>
           </div>
           <div style="text-align: right; font-size: 0.88rem; color: #475569;">
             <div><strong>${t.lblPrintDate}</strong> ${dateStr}</div>
@@ -2705,7 +2705,7 @@
         </table>
 
         <div class="footer-note">
-          © Elena Ruiz Alfaro · Document generat per l'aplicació didàctica EnllaçAR (FQ 1r de Batxillerat).
+          © 2026 Elena Ruiz Alfaro · Document generat per l'aplicació didàctica EnllaçAR (FQ 1r de Batxillerat).
         </div>
       </body>
       </html>
