@@ -1,0 +1,2732 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EnllaçAR </title>
+  <!-- Google Fonts for modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card-bg: #ffffff;
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-light: #eef2ff;
+      --success: #10b981;
+      --success-bg: #ecfdf5;
+      --danger: #ef4444;
+      --danger-bg: #fef2f2;
+      --text: #1e1b4b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --canvas-bg: #f8fafc;
+      --accent: #f59e0b;
+      --purple-accent: #6366f1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: #334155;
+      padding: 1.25rem 1rem 2.5rem;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 1080px;
+    }
+
+    /* Header inspired by screenshot */
+    .top-header {
+      background: var(--card-bg);
+      border-radius: 18px;
+      padding: 1rem 1.4rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 16px -2px rgba(99, 102, 241, 0.06);
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .brand-logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 1.35rem;
+      box-shadow: 0 4px 10px rgba(79, 70, 229, 0.3);
+    }
+
+    .brand-titles h1 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #312e81;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .brand-titles p {
+      font-size: 0.82rem;
+      color: #64748b;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    .top-tools {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      flex-wrap: wrap;
+    }
+
+    /* Badges from screenshot */
+    .pill-stat {
+      padding: 0.4rem 0.8rem;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      border: 1px solid transparent;
+      user-select: none;
+    }
+
+    .pill-stat.score {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-color: #dbeafe;
+    }
+
+    .pill-stat.record {
+      background: #fffbeb;
+      color: #b45309;
+      border-color: #fef3c7;
+    }
+
+    .pill-stat.streak {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(99, 102, 241, 0.25);
+    }
+
+    .lang-pills {
+      display: flex;
+      background: #f1f5f9;
+      padding: 0.25rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+    }
+
+    .btn-lang-pill {
+      border: none;
+      background: transparent;
+      padding: 0.3rem 0.7rem;
+      font-size: 0.78rem;
+      font-weight: 700;
+      border-radius: 9999px;
+      cursor: pointer;
+      color: #64748b;
+      transition: all 0.15s ease;
+    }
+
+    .btn-lang-pill.active {
+      background: #ffffff;
+      color: #4338ca;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+
+    /* Timer Pill Centered under Header */
+    .timer-center-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1.15rem;
+    }
+
+    .timer-pill-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      padding: 0.45rem 1rem;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .timer-label {
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: #475569;
+      letter-spacing: 0.04em;
+    }
+
+    .timer-digits {
+      font-size: 1rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: #1e1b4b;
+    }
+
+    .timer-btn-ctrl {
+      background: #f1f5f9;
+      border: none;
+      border-radius: 6px;
+      width: 26px;
+      height: 26px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #475569;
+      font-size: 0.8rem;
+      transition: all 0.15s;
+    }
+
+    .timer-btn-ctrl:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* Navigation tabs in pill container */
+    .nav-pill-container {
+      background: #eef2f7;
+      border-radius: 14px;
+      padding: 0.35rem;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.4rem;
+      margin-bottom: 1.35rem;
+    }
+
+    .tab-pill {
+      border: none;
+      background: transparent;
+      padding: 0.65rem 0.5rem;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      text-align: center;
+    }
+
+    .tab-pill:hover {
+      color: #334155;
+    }
+
+    .tab-pill.active {
+      background: #ffffff;
+      color: #4338ca;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    /* Top Horizontal Configuration Bar */
+    .config-top-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 0.9rem 1.25rem;
+      margin-bottom: 1.15rem;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .config-input-group {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex: 1 1 280px;
+    }
+
+    .config-input-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #475569;
+      white-space: nowrap;
+    }
+
+    .config-input-group input {
+      flex: 1;
+      min-width: 150px;
+      padding: 0.5rem 0.8rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.86rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .config-input-group input:focus {
+      border-color: var(--primary);
+    }
+
+    .config-stats-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-chip-pill {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: #475569;
+    }
+
+    .stat-chip-pill strong {
+      color: var(--primary);
+      font-size: 0.88rem;
+    }
+
+    .btn-pdf-action {
+      padding: 0.55rem 1.15rem;
+      background: #059669;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.84rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: all 0.15s;
+      box-shadow: 0 2px 8px rgba(5, 150, 105, 0.2);
+      white-space: nowrap;
+    }
+
+    .btn-pdf-action:hover {
+      background: #047857;
+      transform: translateY(-1px);
+    }
+
+    /* Main Interactive Work Area (Full Width) */
+    .content-card {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 1.6rem;
+      box-shadow: 0 4px 16px -2px rgba(0,0,0,0.03);
+      position: relative;
+      width: 100%;
+    }
+
+    .card-top-tag-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .category-chip-pill {
+      background: #eef2ff;
+      color: #4f46e5;
+      padding: 0.35rem 0.85rem;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+
+    .mode-sub-action-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: #94a3b8;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .main-prompt-area {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .prompt-subtitle {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #94a3b8;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .prompt-title-large {
+      font-size: 1.9rem;
+      font-weight: 800;
+      color: #1e1b4b;
+      letter-spacing: -0.02em;
+    }
+
+    .prompt-description-text {
+      font-size: 0.95rem;
+      color: #475569;
+      max-width: 600px;
+      margin: 0.5rem auto 0;
+      line-height: 1.5;
+    }
+
+    /* Option buttons like screenshot */
+    .options-grid-modern {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .btn-quiz-option {
+      padding: 0.9rem 1.1rem;
+      border: 1.5px solid var(--border);
+      background: #ffffff;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: #334155;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s ease;
+      line-height: 1.35;
+    }
+
+    .btn-quiz-option:hover:not(:disabled) {
+      border-color: #6366f1;
+      background: #faf5ff;
+      transform: translateY(-1px);
+    }
+
+    .btn-quiz-option.correct {
+      background: var(--success-bg) !important;
+      border-color: var(--success) !important;
+      color: #065f46 !important;
+      font-weight: 700;
+    }
+
+    .btn-quiz-option.incorrect {
+      background: var(--danger-bg) !important;
+      border-color: var(--danger) !important;
+      color: #991b1b !important;
+    }
+
+    .btn-quiz-option:disabled {
+      cursor: not-allowed;
+      opacity: 0.75;
+    }
+
+    /* Action bottom button row */
+    .action-bar-bottom {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-primary-purple {
+      padding: 0.75rem 1.6rem;
+      background: #4f46e5;
+      color: #ffffff;
+      border: none;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.15s;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    }
+
+    .btn-primary-purple:hover {
+      background: #4338ca;
+      transform: translateY(-1px);
+    }
+
+    .feedback-banner-modern {
+      display: none;
+      padding: 1.1rem 1.25rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      margin: 1.25rem 0;
+    }
+
+    .feedback-banner-modern.show {
+      display: block;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    .feedback-banner-modern.correct {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+
+    .feedback-banner-modern.error {
+      background: #fef2f2;
+      color: #991b1b;
+      border: 1px solid #fecaca;
+    }
+
+    /* Simulation styling */
+    .sim-button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+
+    .sim-selector-btn {
+      padding: 0.45rem 0.85rem;
+      border: 1.5px solid var(--border);
+      background: #ffffff;
+      border-radius: 9999px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.82rem;
+      color: #475569;
+      transition: all 0.15s;
+    }
+
+    .sim-selector-btn.active {
+      background: #4f46e5;
+      border-color: #4f46e5;
+      color: #ffffff;
+    }
+
+    .canvas-card-box {
+      position: relative;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: #f8fafc;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 270px;
+    }
+
+    .sim-floating-badge {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      background: rgba(255, 255, 255, 0.94);
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #334155;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(4px);
+    }
+
+    .sim-theory-note {
+      margin-top: 1.15rem;
+      padding: 1.1rem;
+      background: #f8fafc;
+      border-radius: 12px;
+      font-size: 0.88rem;
+      line-height: 1.55;
+      border-left: 4px solid var(--primary);
+    }
+
+    /* Blind testing game specific */
+    .candidate-grid-dynamic {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 0.6rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .candidate-chip-interactive {
+      padding: 0.8rem 0.6rem;
+      text-align: center;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: #ffffff;
+      font-weight: 700;
+      font-size: 0.86rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      user-select: none;
+      color: #1e293b;
+    }
+
+    .candidate-chip-interactive:hover {
+      border-color: #6366f1;
+      background: #f5f3ff;
+      transform: translateY(-1px);
+    }
+
+    .candidate-chip-interactive.discarded {
+      text-decoration: line-through;
+      opacity: 0.35;
+      background: #f1f5f9;
+      cursor: not-allowed;
+      border-color: #cbd5e1;
+      transform: none;
+    }
+
+    .candidate-chip-interactive.winner {
+      background: #ecfdf5 !important;
+      border-color: #10b981 !important;
+      color: #065f46 !important;
+    }
+
+    .tests-grid-modern {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.85rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .test-modern-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .test-modern-box h4 {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .test-desc-sub {
+      font-size: 0.77rem;
+      color: #64748b;
+      margin-top: 0.25rem;
+    }
+
+    .test-result-indicator {
+      margin-top: 0.65rem;
+      padding: 0.5rem 0.65rem;
+      background: #f1f5f9;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #475569;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+    }
+
+    .test-result-indicator.active {
+      background: #f0fdf4;
+      color: #166534;
+      border: 1px solid #bbf7d0;
+    }
+
+    .btn-run-assay {
+      margin-top: 0.65rem;
+      padding: 0.45rem 0.85rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      background: #ffffff;
+      cursor: pointer;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #334155;
+      transition: all 0.15s;
+      align-self: flex-start;
+    }
+
+    .btn-run-assay:hover:not(:disabled) {
+      background: #f8fafc;
+      border-color: #6366f1;
+      color: #4338ca;
+    }
+
+    .btn-run-assay:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    /* Bottom Discreet Text-Only Credits */
+    .copyright-footer {
+      margin-top: 2.2rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .copyright-text-discreet {
+      font-size: 0.78rem;
+      color: #94a3b8;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: color 0.2s ease;
+    }
+
+    .copyright-text-discreet strong {
+      color: #64748b;
+      font-weight: 600;
+    }
+
+    /* Modal for report configuration & printable view */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(3px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #ffffff;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-header {
+      padding: 1.15rem 1.4rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-header h3 {
+      font-size: 1.15rem;
+      color: #0f172a;
+      font-weight: 800;
+    }
+    .modal-close {
+      background: transparent;
+      border: none;
+      font-size: 1.25rem;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .modal-body {
+      padding: 1.25rem 1.4rem;
+    }
+
+    .report-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 0.75rem;
+      background: #ffffff;
+      font-size: 0.8rem;
+    }
+    .report-table th, .report-table td {
+      border: 1px solid var(--border);
+      padding: 0.45rem 0.6rem;
+      text-align: left;
+    }
+    .report-table th {
+      background: #f1f5f9;
+      color: #334155;
+      font-weight: 700;
+    }
+
+    .modal-footer {
+      padding: 1rem 1.4rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.65rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 860px) {
+      .config-top-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .config-stats-row {
+        justify-content: center;
+      }
+      .btn-pdf-action {
+        justify-content: center;
+      }
+      .nav-pill-container {
+        grid-template-columns: 1fr 1fr;
+      }
+      .tests-grid-modern {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- Top bar inspired by screenshot -->
+  <header class="top-header">
+    <div class="brand-block">
+      <div class="brand-logo-icon">⚛</div>
+      <div class="brand-titles">
+        <h1 id="titleBrand">EnllaçAR</h1>
+        <p id="subBrand">Dpto. Física y Química — Elena Ruiz Alfaro</p>
+      </div>
+    </div>
+
+    <div class="top-tools">
+      <div class="lang-pills">
+        <button class="btn-lang-pill active" id="btnLangES" onclick="setAppLanguage('es')">Castellano</button>
+        <button class="btn-lang-pill" id="btnLangCA" onclick="setAppLanguage('ca')">Català</button>
+      </div>
+
+      <div class="pill-stat score">
+        <span>ACIERTOS:</span> <strong id="headScore">0</strong>
+      </div>
+
+      <div class="pill-stat record">
+        <span>RÉCORD:</span> <strong id="headRecord">0</strong>
+      </div>
+
+      <div class="pill-stat streak">
+        <span>🔥 RACHA:</span> <strong id="headStreak">0</strong>
+      </div>
+    </div>
+  </header>
+
+  <!-- Centered timer pill like screenshot -->
+  <div class="timer-center-wrap">
+    <div class="timer-pill-box">
+      <span style="font-size: 1rem;">⏱</span>
+      <span class="timer-label" id="lblTimerHeader">TIEMPO:</span>
+      <span class="timer-digits" id="timerDisplay">00:00</span>
+      <button class="timer-btn-ctrl" id="btnTimerToggle" onclick="toggleTimer()" title="Pausar / Reanudar">⏸</button>
+      <button class="timer-btn-ctrl" onclick="resetTimer()" title="Reiniciar">↺</button>
+    </div>
+  </div>
+
+  <!-- Horizontal Top Configuration & Session Bar -->
+  <div class="config-top-card">
+    <div class="config-input-group">
+      <label for="studentNameInput" id="lblSidebarStudent">👤 Nombre:</label>
+      <input type="text" id="studentNameInput" placeholder="Ej. Ana García" oninput="syncStudentName()">
+    </div>
+
+    <!-- Hidden label retained for i18n compatibility -->
+    <span id="lblConfigHeading" style="display: none;"></span>
+    <span id="lblProgressHeading" style="display: none;"></span>
+
+    <div class="config-stats-row">
+      <div class="stat-chip-pill">
+        <span id="lblStatSidebarM1">Enlace:</span>
+        <strong id="sidebarM1Score">0</strong>
+      </div>
+      <div class="stat-chip-pill">
+        <span id="lblStatSidebarM2">Propiedades:</span>
+        <strong id="sidebarM2Score">0</strong>
+      </div>
+      <div class="stat-chip-pill">
+        <span id="lblStatSidebarGame">Muestras:</span>
+        <strong id="sidebarGameScore">0</strong>
+      </div>
+    </div>
+
+    <button class="btn-pdf-action" onclick="openReportModal()">
+      <span>📄</span> <span id="lblBtnGeneratePdf">Generar PDF de Sesión</span>
+    </button>
+  </div>
+
+  <!-- Navigation pill tabs -->
+  <nav class="nav-pill-container">
+    <button class="tab-pill active" id="tabBtnSim" onclick="changeTab('sim')">
+      🔬 <span id="labelTabSim">Simulador Microscópico</span>
+    </button>
+    <button class="tab-pill" id="tabBtnMode1" onclick="changeTab('mode1')">
+      ⚛️ <span id="labelTabMode1">Deducción de Enlace</span>
+    </button>
+    <button class="tab-pill" id="tabBtnMode2" onclick="changeTab('mode2')">
+      🕵️ <span id="labelTabMode2">Detective de Propiedades</span>
+    </button>
+    <button class="tab-pill" id="tabBtnGame" onclick="changeTab('game')">
+      🧪 <span id="labelTabGame">Ensayos a Ciegas</span>
+    </button>
+  </nav>
+
+  <!-- Main Workspace Area -->
+  <main class="content-card">
+    <!-- Section 1: Microscopic Simulator -->
+    <section id="sectionSim">
+        <div class="card-top-tag-bar">
+          <span class="category-chip-pill" id="tagSimCategory">Laboratorio Visual Interactivo</span>
+          <span class="mode-sub-action-label" id="tagSimSub">Estructura y Fuerzas</span>
+        </div>
+
+        <div class="sim-button-row">
+          <button class="sim-selector-btn active" id="btnBondIonic" onclick="selectBond('ionic')">
+            NaCl / NaF (Iónico)
+          </button>
+          <button class="sim-selector-btn" id="btnBondMetallic" onclick="selectBond('metallic')">
+            Cu / Fe / Al (Metálico)
+          </button>
+          <button class="sim-selector-btn" id="btnBondMolecular" onclick="selectBond('molecular')">
+            H₂O / I₂ / CH₄ (Molecular)
+          </button>
+          <button class="sim-selector-btn" id="btnBondNetwork" onclick="selectBond('network')">
+            Diamante / SiO₂ (Reticular)
+          </button>
+        </div>
+
+        <div class="canvas-card-box">
+          <div class="sim-floating-badge" id="simLiveBadge">Estructura cristalina estable</div>
+          <canvas id="canvasSim" width="760" height="260"></canvas>
+        </div>
+
+        <div class="action-bar-bottom" style="margin-top: 1rem; border-top: none; padding-top: 0;">
+          <button class="btn-primary-purple" id="btnSimAction" onclick="performSimAction()">
+            🔨 <span id="labelSimAction">Golpe mecánico (Fragilidad)</span>
+          </button>
+          <button class="btn-quiz-option" style="padding: 0.75rem 1rem;" id="btnSimReset" onclick="resetSimAction()">
+            ↺ <span id="labelSimReset">Restablecer</span>
+          </button>
+        </div>
+
+        <div class="sim-theory-note" id="simTheoryText">
+          <!-- Theory text dynamically injected -->
+        </div>
+      </section>
+
+      <!-- Section 2: Mode 1 - Bond Deduction -->
+      <section id="sectionMode1" style="display: none;">
+        <div class="card-top-tag-bar">
+          <span class="category-chip-pill" id="tagM1Cat">Enfoque Deductivo</span>
+          <span class="mode-sub-action-label" id="tagM1Sub">Naturaleza ➔ Tipo de Enlace</span>
+        </div>
+
+        <div class="main-prompt-area">
+          <div class="prompt-subtitle" id="lblM1PromptSub">Sustancia Asignada:</div>
+          <div class="prompt-title-large" id="m1SubstanceTitle">NaCl (cloruro de sodio)</div>
+          <div class="prompt-description-text" id="m1PromptHint">Observa la posición de los átomos en la tabla periódica.</div>
+        </div>
+
+        <!-- Step 1: Elements Nature -->
+        <div id="m1Step1Container">
+          <div style="font-size: 0.88rem; font-weight: 700; color: #1e1b4b; margin-bottom: 0.65rem;" id="lblM1Step1">
+            Paso 1: ¿Cuál es la naturaleza de los elementos que constituyen esta sustancia?
+          </div>
+          <div class="options-grid-modern" id="m1Step1Options"></div>
+        </div>
+
+        <!-- Step 2: Bond Type Deduction -->
+        <div id="m1Step2Container" style="display: none; margin-top: 1.25rem;">
+          <div style="font-size: 0.88rem; font-weight: 700; color: #1e1b4b; margin-bottom: 0.65rem;" id="lblM1Step2">
+            Paso 2: De acuerdo con los elementos, ¿qué modelo de enlace químico se establece?
+          </div>
+          <div class="options-grid-modern" id="m1Step2Options"></div>
+        </div>
+
+        <div class="feedback-banner-modern" id="m1Feedback"></div>
+
+        <div class="action-bar-bottom">
+          <button class="btn-primary-purple" id="btnM1Next" onclick="nextMode1Challenge()" style="display: none;">
+            <span id="lblM1Next">Siguiente reto ➜</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Section 3: Mode 2 - Property Detective -->
+      <section id="sectionMode2" style="display: none;">
+        <div class="card-top-tag-bar">
+          <span class="category-chip-pill" id="tagM2Cat">Detective de Propiedades</span>
+          <span class="mode-sub-action-label" id="tagM2Sub">Macroscópico ➔ Microscópico</span>
+        </div>
+
+        <div class="main-prompt-area">
+          <div class="prompt-subtitle" id="lblM2PromptSub">PROPIEDADES EXPERIMENTALES OBSERVADAS:</div>
+          <div style="font-size: 1.05rem; font-weight: 600; color: #1e1b4b; line-height: 1.6; margin-top: 0.5rem; background: #f8fafc; padding: 1rem; border-radius: 12px; border: 1px solid var(--border);" id="m2PropertiesClue">
+            <!-- Injected dynamically -->
+          </div>
+        </div>
+
+        <!-- Step 1: Bond Type -->
+        <div>
+          <div style="font-size: 0.88rem; font-weight: 700; color: #1e1b4b; margin-bottom: 0.65rem;" id="lblM2Step1">
+            Paso 1: ¿A qué tipo de enlace o estructura corresponde este comportamiento?
+          </div>
+          <div class="options-grid-modern" id="m2Step1Options"></div>
+        </div>
+
+        <!-- Step 2: Compatible Substance -->
+        <div id="m2Step2Container" style="display: none; margin-top: 1.25rem;">
+          <div style="font-size: 0.88rem; font-weight: 700; color: #1e1b4b; margin-bottom: 0.65rem;" id="lblM2Step2">
+            Paso 2: ¿Cuál de las siguientes sustancias es compatible con estas propiedades?
+          </div>
+          <div class="options-grid-modern" id="m2Step2Options"></div>
+        </div>
+
+        <div class="feedback-banner-modern" id="m2Feedback"></div>
+
+        <div class="action-bar-bottom">
+          <button class="btn-primary-purple" id="btnM2Next" onclick="nextMode2Challenge()" style="display: none;">
+            <span id="lblM2Next">Siguiente enigma ➜</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Section 4: Blind Testing Game -->
+      <section id="sectionGame" style="display: none;">
+        <div class="card-top-tag-bar">
+          <span class="category-chip-pill" id="tagGameCat">Laboratorio a Ciegas</span>
+          <span class="mode-sub-action-label" id="tagGameSub">
+            <span id="lblAssaysCount">Ensayos usados:</span> <strong id="numTestsUsed" style="color: #4f46e5;">0</strong> / 5
+          </span>
+        </div>
+
+        <div class="main-prompt-area" style="text-align: left; margin-bottom: 1.1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+            <div>
+              <span class="prompt-subtitle" id="lblSampleId">Muestra desconocida:</span>
+              <span style="font-size: 1.4rem; font-weight: 800; color: #4338ca; margin-left: 0.35rem;" id="tagMystery">#402</span>
+            </div>
+            <span style="font-size: 0.82rem; color: #64748b;" id="lblDynamicPoolNote">(Pool de 6 candidatos seleccionados al azar en este reto)</span>
+          </div>
+        </div>
+
+        <div style="font-size: 0.85rem; font-weight: 700; color: #475569; margin-bottom: 0.5rem;" id="lblSelectCandidate">
+          Sustancias candidatas en este turno (haz clic para validar o descartar tu hipótesis):
+        </div>
+        <div class="candidate-grid-dynamic" id="boxCandidates"></div>
+
+        <div style="font-size: 0.88rem; font-weight: 800; color: #1e1b4b; margin: 1.25rem 0 0.65rem;" id="headingAssays">
+          Ensayos de laboratorio disponibles:
+        </div>
+
+        <div class="tests-grid-modern">
+          <!-- 1. Hardness -->
+          <div class="test-modern-box">
+            <div>
+              <h4>💎 <span id="tTitleHardness">1. Ensayo de dureza</span></h4>
+              <p class="test-desc-sub" id="tDescHardness">Resistencia de la superficie a ser rayada.</p>
+            </div>
+            <div class="test-result-indicator" id="resHardness">Pendiente</div>
+            <button class="btn-run-assay" id="btnTestHardness" onclick="executeBlindTest('hardness')">
+              <span id="btnRunHardness">Ejecutar ensayo</span>
+            </button>
+          </div>
+
+          <!-- 2. Fragility -->
+          <div class="test-modern-box">
+            <div>
+              <h4>🔨 <span id="tTitleFragility">2. Fragilidad y choque</span></h4>
+              <p class="test-desc-sub" id="tDescFragility">Impacto mecánico (frágil frente a maleable / dúctil).</p>
+            </div>
+            <div class="test-result-indicator" id="resFragility">Pendiente</div>
+            <button class="btn-run-assay" id="btnTestFragility" onclick="executeBlindTest('fragility')">
+              <span id="btnRunFragility">Ejecutar ensayo</span>
+            </button>
+          </div>
+
+          <!-- 3. Conductivity -->
+          <div class="test-modern-box">
+            <div>
+              <h4>⚡ <span id="tTitleConduct">3. Conductividad eléctrica</span></h4>
+              <p class="test-desc-sub" id="tDescConduct">Paso de corriente en sólido y fundido / disuelto.</p>
+            </div>
+            <div class="test-result-indicator" id="resConductivity">Pendiente</div>
+            <button class="btn-run-assay" id="btnTestConductivity" onclick="executeBlindTest('conduct')">
+              <span id="btnRunConduct">Ejecutar ensayo</span>
+            </button>
+          </div>
+
+          <!-- 4. Thermal -->
+          <div class="test-modern-box">
+            <div>
+              <h4>🔥 <span id="tTitleThermal">4. Ensayo térmico</span></h4>
+              <p class="test-desc-sub" id="tDescThermal">Temperatura necesaria para fundir la sustancia.</p>
+            </div>
+            <div class="test-result-indicator" id="resThermal">Pendiente</div>
+            <button class="btn-run-assay" id="btnTestThermal" onclick="executeBlindTest('thermal')">
+              <span id="btnRunThermal">Ejecutar ensayo</span>
+            </button>
+          </div>
+
+          <!-- 5. Solubility -->
+          <div class="test-modern-box" style="grid-column: span 2;">
+            <div>
+              <h4>💧 <span id="tTitleSolub">5. Solubilidad en agua (solvente polar)</span></h4>
+              <p class="test-desc-sub" id="tDescSolub">Capacidad de solvatación e interacción con dipolos de H₂O.</p>
+            </div>
+            <div class="test-result-indicator" id="resSolubility">Pendiente</div>
+            <button class="btn-run-assay" id="btnTestSolubility" onclick="executeBlindTest('solub')">
+              <span id="btnRunSolub">Ejecutar ensayo</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="feedback-banner-modern" id="boxGameFeedback"></div>
+
+        <div class="action-bar-bottom">
+          <button class="btn-primary-purple" id="btnNewMystery" style="display: none;" onclick="setupNewMysteryGame()">
+            <span id="labelBtnNewMystery">Siguiente muestra desconocida ➜</span>
+          </button>
+        </div>
+      </section>
+  </main>
+
+  <!-- Bottom Discreet Text-Only Credits -->
+  <footer class="copyright-footer">
+    <p class="copyright-text-discreet">
+      © <strong>Elena Ruiz Alfaro</strong> · Dpto. Física y Química · BAT_FQ · IEDIB
+    </p>
+  </footer>
+
+  <!-- Official PDF Report Modal -->
+  <div class="modal-overlay" id="reportModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modalTitle">Informe oficial de sesión - BAT_FQ</h3>
+        <button class="modal-close" onclick="closeReportModal()">&times;</button>
+      </div>
+      <div class="modal-body" id="printableArea">
+        <div style="border-bottom: 2px solid #4f46e5; padding-bottom: 0.85rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <h2 style="font-size: 1.3rem; color: #1e1b4b; margin: 0;">EnllaçAR - Laboratori d'Enllaç Químic</h2>
+            <p style="font-size: 0.85rem; color: #64748b; margin: 2px 0 0;">Física i Química (BAT_FQ) — Dpto. Física y Química — Elena Ruiz Alfaro</p>
+          </div>
+          <div style="text-align: right; font-size: 0.82rem; color: #475569;">
+            <div><strong id="lblPrintDate">Fecha:</strong> <span id="printDateSpan">--/--/----</span></div>
+            <div><strong id="lblPrintTime">Tiempo:</strong> <span id="printTimeSpan">00:00</span></div>
+          </div>
+        </div>
+
+        <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 10px; padding: 0.85rem; margin-bottom: 1.15rem;">
+          <strong id="lblStudentCard">Estudiante:</strong>
+          <span id="printStudentName" style="font-size: 1rem; font-weight: 700; color: #1e1b4b; margin-left: 0.35rem;">(Pendiente de indicar)</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-bottom: 1.25rem;">
+          <div style="border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; text-align: center;">
+            <strong style="font-size: 1.4rem; color: #4f46e5; display: block;" id="statM1Score">0</strong>
+            <span style="font-size: 0.8rem; color: #64748b;" id="lblStatM1">Deducción de Enlace</span>
+          </div>
+          <div style="border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; text-align: center;">
+            <strong style="font-size: 1.4rem; color: #4f46e5; display: block;" id="statM2Score">0</strong>
+            <span style="font-size: 0.8rem; color: #64748b;" id="lblStatM2">Detective de Propiedades</span>
+          </div>
+          <div style="border: 1px solid var(--border); border-radius: 10px; padding: 0.75rem; text-align: center;">
+            <strong style="font-size: 1.4rem; color: #4f46e5; display: block;" id="statGameScore">0</strong>
+            <span style="font-size: 0.8rem; color: #64748b;" id="lblStatGame">Muestras descubiertas</span>
+          </div>
+        </div>
+
+        <h4 style="font-size: 0.9rem; color: #1e1b4b; margin-bottom: 0.5rem;" id="lblAuditTitle">Auditoría detallada de respuestas:</h4>
+        <div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th id="thMode">Modalidad</th>
+                <th id="thSubstance">Sustancia / Enigma</th>
+                <th id="thAnswer">Respuesta del alumno</th>
+                <th id="thResult">Resultado</th>
+              </tr>
+            </thead>
+            <tbody id="reportTableBody">
+              <!-- Dynamically injected -->
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 1.5rem; text-align: center; font-size: 0.75rem; color: #94a3b8; border-top: 1px solid var(--border); padding-top: 0.65rem;">
+          © Elena Ruiz Alfaro · Aplicació didàctica física i química · IEDIB
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-quiz-option" onclick="closeReportModal()" id="btnCancelReport">Cerrar</button>
+        <button class="btn-pdf-action" style="width: auto; padding: 0.65rem 1.25rem;" onclick="printOfficialReport()">
+          <span>🖨️</span> <span id="btnPrintReport">Descargar PDF / Imprimir</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentLang = 'es';
+
+  // Gamification stats
+  let totalScore = 0;
+  let recordScore = 0;
+  let currentStreak = 0;
+
+  // Session timer
+  let timerSeconds = 0;
+  let timerInterval = null;
+  let isTimerRunning = true;
+
+  // Audit log
+  let sessionAuditLog = [];
+  let m1Score = 0;
+  let m2Score = 0;
+  let gameSamplesSolved = 0;
+
+  // Expanded database with 16 substances from BAT_FQ UP 1 curriculum
+  const DATABASE = [
+    {
+      id: "nacl",
+      formula: "NaCl",
+      name_ca: "Clorur de sodi (NaCl)",
+      name_es: "Cloruro de sodio (NaCl)",
+      natureKey: "metal_nonmetal",
+      bondKey: "ionic",
+      bond_ca: "Enllaç Iònic",
+      bond_es: "Enlace Iónico",
+      hardness_ca: "Alta duresa: xarxa cristal·lina molt compacta resistent al ratllat.",
+      hardness_es: "Alta dureza: red cristalina muy compacta resistente al rayado.",
+      fragility_ca: "Molt fràgil: el cop desplaça els ions, enfronta càrregues iguals i es fractura.",
+      fragility_es: "Muy frágil: el impacto desplaza iones, enfrenta cargas iguales y se fractura.",
+      conduct_ca: "Aïllant en sòlid; excel·lent conductor fos o en dissolució aquosa.",
+      conduct_es: "Aislante en sólido; excelente conductor fundido o en disolución acuosa.",
+      thermal_ca: "Punt de fusió elevat (~801 °C).",
+      thermal_es: "Punto de fusión elevado (~801 °C).",
+      solub_ca: "Molt soluble en aigua per solvatació dels ions Na⁺ i Cl⁻.",
+      solub_es: "Muy soluble en agua por solvatación de los iones Na⁺ y Cl⁻.",
+      exp_ca: "Format per Na (metall) i Cl (no-metall). La transferència d'electrons crea ions Na⁺ i Cl⁻ units per forta atracció electroestàtica. En desplaçar-se capes d'ions en rebre un cop, les càrregues iguals es repel·leixen, trencant el cristall (fragilitat).",
+      exp_es: "Formado por Na (metal) y Cl (no metal). La transferencia de electrones produce iones Na⁺ y Cl⁻ unidos por atracción electrostática. Al desplazarse capas de iones por un impacto, las cargas del mismo signo se repelen y el cristal se fractura (fragilidad)."
+    },
+    {
+      id: "naf",
+      formula: "NaF",
+      name_ca: "Fluorur de sodi (NaF)",
+      name_es: "Fluoruro de sodio (NaF)",
+      natureKey: "metal_nonmetal",
+      bondKey: "ionic",
+      bond_ca: "Enllaç Iònic",
+      bond_es: "Enlace Iónico",
+      hardness_ca: "Alta duresa per la gran energia reticular entre Na⁺ i F⁻.",
+      hardness_es: "Alta dureza por la gran energía reticular entre Na⁺ y F⁻.",
+      fragility_ca: "Molt fràgil: fractura instantània davant forces de cisallament.",
+      fragility_es: "Muy frágil: fractura instantánea ante fuerzas de cizallamiento.",
+      conduct_ca: "Aïllant en estat sòlid; condueix la corrent fos o dissolt en aigua.",
+      conduct_es: "Aislante en estado sólido; conduce la corriente fundido o disuelto en agua.",
+      thermal_ca: "Punt de fusió molt elevat (~993 °C).",
+      thermal_es: "Punto de fusión muy elevado (~993 °C).",
+      solub_ca: "Soluble en aigua formant solucions electrolítiques.",
+      solub_es: "Soluble en agua formando disoluciones electrolíticas.",
+      exp_ca: "Format per un metall alcalí (Na) i un halogen molt electronegatiu (F). Els ions adquireixen estructura de gas noble, formant una xarxa tridimensional compacta, dura i fràgil.",
+      exp_es: "Formado por un metal alcalino (Na) y un halógeno muy electronegativo (F). Los iones adquieren configuración de gas noble formando una red tridimensional compacta, dura y frágil."
+    },
+    {
+      id: "cu",
+      formula: "Cu",
+      name_ca: "Coure (Cu)",
+      name_es: "Cobre (Cu)",
+      natureKey: "metal_pure",
+      bondKey: "metallic",
+      bond_ca: "Enllaç Metàl·lic",
+      bond_es: "Enlace Metálico",
+      hardness_ca: "Duresa mitjana: resistència moderada al ratllat.",
+      hardness_es: "Dureza media: resistencia moderada al rayado.",
+      fragility_ca: "Dúctil i mal·leable: es deforma en fils i làmines sense fracturar-se sota cops.",
+      fragility_es: "Dúctil y maleable: se deforma en hilos y láminas sin fracturarse bajo golpes.",
+      conduct_ca: "Excel·lent conductor elèctric i tèrmic tant en sòlid com fos.",
+      conduct_es: "Excelente conductor eléctrico y térmico tanto en sólido como fundido.",
+      thermal_ca: "Punt de fusió alt (~1085 °C).",
+      thermal_es: "Punto de fusión alto (~1085 °C).",
+      solub_ca: "Completament insoluble en aigua.",
+      solub_es: "Completamente insoluble en agua.",
+      exp_ca: "Element metàl·lic pur. Els àtoms alliberen electrons formant una xarxa de cations envoltada per un mar d'electrons deslocalitzats, que permet el lliscament dels plans atòmics sense ruptura (mal·leabilitat).",
+      exp_es: "Elemento metálico puro. Los átomos liberan electrones formando cationes envueltos en un mar de electrones deslocalizados, permitiendo el deslizamiento de planos atómicos sin fractura (maleabilidad)."
+    },
+    {
+      id: "fe",
+      formula: "Fe",
+      name_ca: "Ferro (Fe)",
+      name_es: "Hierro (Fe)",
+      natureKey: "metal_pure",
+      bondKey: "metallic",
+      bond_ca: "Enllaç Metàl·lic",
+      bond_es: "Enlace Metálico",
+      hardness_ca: "Duresa mitjana/alta amb notable resistència estructural.",
+      hardness_es: "Dureza media/alta con notable resistencia estructural.",
+      fragility_ca: "Tenaç i deformable a altes temperatures (no fràgil).",
+      fragility_es: "Tenaz y deformable a altas temperaturas (no frágil).",
+      conduct_ca: "Bon conductor elèctric i tèrmic en sòlid i líquid.",
+      conduct_es: "Buen conductor eléctrico y térmico en sólido y líquido.",
+      thermal_ca: "Punt de fusió elevat (~1538 °C).",
+      thermal_es: "Punto de fusión elevado (~1538 °C).",
+      solub_ca: "Insoluble en aigua.",
+      solub_es: "Insoluble en agua.",
+      exp_ca: "Xarxa cúbica centrada en el cos típica de metalls de transició, on els electrons deslocalitzats cohesionen la xarxa davant impactes mecànics.",
+      exp_es: "Red cúbica centrada en el cuerpo típica de metales de transición, donde los electrones deslocalizados cohesionan los planos catiónicos ante impactos."
+    },
+    {
+      id: "ag",
+      formula: "Ag",
+      name_ca: "Plata (Ag)",
+      name_es: "Plata (Ag)",
+      natureKey: "metal_pure",
+      bondKey: "metallic",
+      bond_ca: "Enllaç Metàl·lic",
+      bond_es: "Enlace Metálico",
+      hardness_ca: "Duresa mitjana-baixa: es ratlla fàcilment amb un punxó d'acer.",
+      hardness_es: "Dureza media-baja: se raya fácilmente con una punta de acero.",
+      fragility_ca: "Extraordinàriament mal·leable i dúctil: no es trenca en martellejar-se.",
+      fragility_es: "Extraordinariamente maleable y dúctil: no se rompe al martillearse.",
+      conduct_ca: "Màxima conductivitat elèctrica i tèrmica coneguda entre els metalls.",
+      conduct_es: "Máxima conductividad eléctrica y térmica conocida entre los metales.",
+      thermal_ca: "Punt de fusió moderadament alt (~961 °C).",
+      thermal_es: "Punto de fusión moderadamente alto (~961 °C).",
+      solub_ca: "Totalment insoluble en aigua.",
+      solub_es: "Totalmente insoluble en agua.",
+      exp_ca: "Xarxa metàl·lica compacta amb una mobilitat electrònica excepcional que justifica la seva altíssima conductivitat elèctrica.",
+      exp_es: "Red metálica compacta con movilidad electrónica excepcional que explica su máxima conductividad eléctrica."
+    },
+    {
+      id: "al",
+      formula: "Al",
+      name_ca: "Alumini (Al)",
+      name_es: "Aluminio (Al)",
+      natureKey: "metal_pure",
+      bondKey: "metallic",
+      bond_ca: "Enllaç Metàl·lic",
+      bond_es: "Enlace Metálico",
+      hardness_ca: "Duresa baixa-mitjana (es deforma sota pressió).",
+      hardness_es: "Dureza baja-media (se deforma bajo presión).",
+      fragility_ca: "Molt mal·leable (permet fabricar paper d'alumini molt fi sense rompre's).",
+      fragility_es: "Muy maleable (permite fabricar papel de aluminio ultrafino sin romperse).",
+      conduct_ca: "Òptim conductor de l'electricitat i de la calor.",
+      conduct_es: "Óptimo conductor de la electricidad y del calor.",
+      thermal_ca: "Punt de fusió moderat (~660 °C).",
+      thermal_es: "Punto de fusión moderado (~660 °C).",
+      solub_ca: "Insoluble en aigua.",
+      solub_es: "Insoluble en agua.",
+      exp_ca: "Metall lleuger on cada àtom aporta 3 electrons de valència al mar comú, garantint una gran capacitat de conformació mecànica.",
+      exp_es: "Metal ligero donde cada átomo aporta 3 electrones de valencia a la nube común, garantizando una gran maleabilidad."
+    },
+    {
+      id: "ch4",
+      formula: "CH₄",
+      name_ca: "Metà (CH₄)",
+      name_es: "Metano (CH₄)",
+      natureKey: "nonmetals",
+      bondKey: "molecular",
+      bond_ca: "Covalent molecular",
+      bond_es: "Covalente molecular",
+      hardness_ca: "Sòlid summament tou en congelar-se; gas a temperatura ambient.",
+      hardness_es: "Sólido sumamente blando al congelarse; gas a temperatura ambiente.",
+      fragility_ca: "Quebradís en sòlid: manca de resistència per les febles forces de London.",
+      fragility_es: "Quebradizo en sólido: carece de resistencia por las débiles fuerzas de London.",
+      conduct_ca: "Aïllant elèctric complet en qualsevol estat.",
+      conduct_es: "Aislante eléctrico completo en cualquier estado.",
+      thermal_ca: "Punt de fusió extremadament baix (-182 °C).",
+      thermal_es: "Punto de fusión extremadamente bajo (-182 °C).",
+      solub_ca: "Molt poc soluble en aigua (molècula apolar).",
+      solub_es: "Muy poco soluble en agua (molécula apolar).",
+      exp_ca: "Format per carboni i hidrogen (dos no-metalls) que comparteixen electrons formant molècules discretes neutres. Les forces intermoleculars de dispersió són molt febles.",
+      exp_es: "Formado por carbono e hidrógeno (dos no metales) que comparten electrones en moléculas discretas neutras unidas por débiles fuerzas de London."
+    },
+    {
+      id: "h2o",
+      formula: "H₂O",
+      name_ca: "Aigua / Gel (H₂O)",
+      name_es: "Agua / Hielo (H₂O)",
+      natureKey: "nonmetals",
+      bondKey: "molecular",
+      bond_ca: "Covalent molecular",
+      bond_es: "Covalente molecular",
+      hardness_ca: "Sòlid tou en estat de gel (fàcil de ratllar amb l'ungla).",
+      hardness_es: "Sólido blando en estado de hielo (fácil de rayar con la uña).",
+      fragility_ca: "Fràgil i trencadís sota cops mecànics moderats.",
+      fragility_es: "Frágil y quebradizo bajo impactos mecánicos moderados.",
+      conduct_ca: "Aïllant en estat pur (molècules neutres sense ions lliures).",
+      conduct_es: "Aislante en estado puro (moléculas neutras sin iones libres).",
+      thermal_ca: "Punt de fusió baix (0 °C, ebullició a 100 °C).",
+      thermal_es: "Punto de fusión bajo (0 °C, ebullición a 100 °C).",
+      solub_ca: "Líquid polar amb ponts d'hidrogen.",
+      solub_es: "Líquido polar con puentes de hidrógeno.",
+      exp_ca: "Molècules discretes unides per enllaços d'hidrogen. Aquests enllaços intermoleculares es trenquen amb relativa facilitat amb poca calor.",
+      exp_es: "Moléculas discretas unidas por enlaces de hidrógeno intermoleculares que se vencen con facilidad térmica sin descomponer las moléculas."
+    },
+    {
+      id: "i2",
+      formula: "I₂",
+      name_ca: "Iode (I₂)",
+      name_es: "Yodo (I₂)",
+      natureKey: "nonmetals",
+      bondKey: "molecular",
+      bond_ca: "Covalent molecular",
+      bond_es: "Covalente molecular",
+      hardness_ca: "Sòlid tou: cristalls foscos fàcils de ratllar.",
+      hardness_es: "Sólido blando: cristales oscuros fáciles de rayar.",
+      fragility_ca: "Molt fràgil i quebradís: s'esmola fàcilment en pols en pressionar-lo.",
+      fragility_es: "Muy frágil y quebradizo: se desmenuza en polvo al presionarlo.",
+      conduct_ca: "Aïllant absolut del corrent elèctric.",
+      conduct_es: "Aislante absoluto de la corriente eléctrica.",
+      thermal_ca: "Punt de fusió molt baix (114 °C, sublima amb facilitat donant vapor morat).",
+      thermal_es: "Punto de fusión muy bajo (114 °C, sublima fácilmente desprendiendo vapor morado).",
+      solub_ca: "Pràcticament insoluble en aigua (molècula diatòmica apolar).",
+      solub_es: "Prácticamente insoluble en agua (molécula diatómica apolar).",
+      exp_ca: "Format per molècules diatòmiques I-I apolars unides per forces de dispersió febles que permeten la seva fàcil sublimació i volatilitat.",
+      exp_es: "Formado por moléculas diatómicas neutras I-I unidas por fuerzas de dispersión débiles, lo que explica su fragilidad y fácil sublimación."
+    },
+    {
+      id: "co2",
+      formula: "CO₂",
+      name_ca: "Gel sec / Diòxid de carboni (CO₂)",
+      name_es: "Hielo seco / Dióxido de carbono (CO₂)",
+      natureKey: "nonmetals",
+      bondKey: "molecular",
+      bond_ca: "Covalent molecular",
+      bond_es: "Covalente molecular",
+      hardness_ca: "Sòlid tou quan està congelat (-78 °C).",
+      hardness_es: "Sólido blando cuando está congelado (-78 °C).",
+      fragility_ca: "Molt trencadís davant qualsevol impacte.",
+      fragility_es: "Muy quebradizo ante cualquier impacto.",
+      conduct_ca: "No condueix mai el corrent elèctric.",
+      conduct_es: "No conduce jamás la corriente eléctrica.",
+      thermal_ca: "Sublima directament a -78,5 °C sense passar per líquid a 1 atm.",
+      thermal_es: "Sublima directamente a -78,5 °C sin pasar por líquido a 1 atm.",
+      solub_ca: "Moderada solubilitat en aigua mitjançant reacció feble d'equilibri.",
+      solub_es: "Moderada solubilidad en agua mediante reacción débil de equilibrio.",
+      exp_ca: "Molècules lineals apolars O=C=O unides exclusivament per febles interaccions de London en estat sòlid.",
+      exp_es: "Moléculas lineales apolares O=C=O unidas exclusivamente por débiles fuerzas de London en estado sólido."
+    },
+    {
+      id: "nh3",
+      formula: "NH₃",
+      name_ca: "Amoníac / Azà (NH₃)",
+      name_es: "Amoníaco / Azano (NH₃)",
+      natureKey: "nonmetals",
+      bondKey: "molecular",
+      bond_ca: "Covalent molecular",
+      bond_es: "Covalente molecular",
+      hardness_ca: "Gas a temperatura ambient; sòlid molt tou quan es congela a -77 °C.",
+      hardness_es: "Gas a temperatura ambiente; sólido muy blando al congelarse a -77 °C.",
+      fragility_ca: "Sòlid cristal·lí molecular trencadís sota pressió.",
+      fragility_es: "Sólido cristalino molecular quebradizo bajo presión.",
+      conduct_ca: "Pur és aïllant (en solució forma ions NH₄⁺ i OH⁻ parcialment conductors).",
+      conduct_es: "Puro es aislante (en disolución acuosa forma iones NH₄⁺ y OH⁻ conductores).",
+      thermal_ca: "Punt de fusió molt baix (-77,7 °C; ebullició a -33 °C).",
+      thermal_es: "Punto de fusión muy bajo (-77,7 °C; ebullición a -33 °C).",
+      solub_ca: "Extraordinàriament soluble en aigua per formació de ponts d'hidrogen.",
+      solub_es: "Extraordinariamente soluble en agua por formación de enlaces de hidrógeno.",
+      exp_ca: "Format per no-metalls amb molècules piramidals trigonal polars que interactuen entre si mitjançant enllaços d'hidrogen.",
+      exp_es: "Compuesto de no metales con geometría piramidal trigonal muy polar que interactúa mediante enlaces de hidrógeno."
+    },
+    {
+      id: "diamond",
+      formula: "C (diamant)",
+      name_ca: "Carboni (diamant)",
+      name_es: "Carbono (diamante)",
+      natureKey: "covalent_network",
+      bondKey: "network",
+      bond_ca: "Covalent reticular",
+      bond_es: "Covalente reticular",
+      hardness_ca: "Extremadament dur: màxima duresa a l'escala de Mohs (10), no es ratlla per cap altre sòlid comú.",
+      hardness_es: "Extremadamente duro: máxima dureza en la escala de Mohs (10), no se raya con ningún sólido común.",
+      fragility_ca: "Rígid i indeformable per la gran estabilitat dels enllaços tetraèdrics.",
+      fragility_es: "Rígido e indeformable por la enorme estabilidad de los enlaces tetraédricos.",
+      conduct_ca: "Aïllant elèctric absolut (tots els electrons fixats en enllaços σ).",
+      conduct_es: "Aislante eléctrico absoluto (todos los electrones fijos en enlaces σ).",
+      thermal_ca: "Punt de fusió colossal (> 3500 °C).",
+      thermal_es: "Punto de fusión colosal (> 3500 °C).",
+      solub_ca: "Completament insoluble en aigua i en qualsevol dissolvent comú.",
+      solub_es: "Completamente insoluble en agua y en cualquier disolvente común.",
+      exp_ca: "Cada àtom de carboni està unit a 4 àtoms més en geometria tetraèdrica formant una xarxa tridimensional gegant continuada molt difícil de trencar.",
+      exp_es: "Cada átomo de carbono está unido covalentemente a otros 4 en geometría tetraédrica formando una red tridimensional continua de enorme fuerza."
+    },
+    {
+      id: "sio2",
+      formula: "SiO₂",
+      name_ca: "Diòxid de silici / Quars (SiO₂)",
+      name_es: "Dióxido de silicio / Cuarzo (SiO₂)",
+      natureKey: "covalent_network",
+      bondKey: "network",
+      bond_ca: "Covalent reticular",
+      bond_es: "Covalente reticular",
+      hardness_ca: "Extremadament dur: ratlla el vidre i l'acer (duresa 7 Mohs).",
+      hardness_es: "Extremadamente duro: raya el vidrio y el acero (dureza 7 Mohs).",
+      fragility_ca: "Estructura contínua Si-O molt resistent que no admet deformacions plàstiques.",
+      fragility_es: "Estructura continua Si-O muy resistente que no admite deformaciones plásticas.",
+      conduct_ca: "Aïllant elèctric absolut en sòlid i fos.",
+      conduct_es: "Aislante eléctrico absoluto en sólido y fundido.",
+      thermal_ca: "Punt de fusió molt alt (~1710 °C).",
+      thermal_es: "Punto de fusión muy alto (~1710 °C).",
+      solub_ca: "Totalment insoluble en aigua.",
+      solub_es: "Totalmente insoluble en agua.",
+      exp_ca: "Format per silici i oxigen sense molècules independents. La fortalesa dels enllaços covalents continus Si-O en tot el volum explica la seva elevada duresa i altíssim punt de fusió.",
+      exp_es: "Estructura reticular gigante continua formada por tetraedros SiO₄ interconectados, lo que explica su insolubilidad, alta dureza y elevadísimo punto de fusión."
+    },
+    {
+      id: "grafit",
+      formula: "C (grafit)",
+      name_ca: "Carboni (grafit)",
+      name_es: "Carbono (grafito)",
+      natureKey: "covalent_network",
+      bondKey: "network",
+      bond_ca: "Covalent reticular (laminat)",
+      bond_es: "Covalente reticular (laminado)",
+      hardness_ca: "Tou al tacte (duresa 1-2 Mohs) perquè les làmines llisquen entre si.",
+      hardness_es: "Blando al tacto (dureza 1-2 Mohs) porque las láminas se exfolian y deslizan.",
+      fragility_ca: "S'exfolia fàcilment en làmines paral·leles per les febles forces entre capes.",
+      fragility_es: "Se exfolia fácilmente en láminas paralelas por las débiles fuerzas entre capas.",
+      conduct_ca: "Bon conductor de l'electricitat en el pla de les làmines (electrons π deslocalitzats).",
+      conduct_es: "Buen conductor de la electricidad en el plano de las láminas (electrones π deslocalizados).",
+      thermal_ca: "Punt de sublimació extremadament elevat (> 3600 °C).",
+      thermal_es: "Punto de sublimación extremadamente elevado (> 3600 °C).",
+      solub_ca: "Completament insoluble en aigua.",
+      solub_es: "Completamente insoluble en agua.",
+      exp_ca: "Xarxes planes hexagonals d'àtoms de carboni amb enllaços covalents molt forts en cada pla, però units entre capes per febles forces de Van der Waals amb electrons deslocalitzats conductors.",
+      exp_es: "Estructura en capas hexagonales unidas por fuerzas débiles de Van der Waals. Posee electrones deslocalizados que le permiten conducir la electricidad, a diferencia del diamante."
+    },
+    {
+      id: "cas",
+      formula: "CaS",
+      name_ca: "Sulfur de calci (CaS)",
+      name_es: "Sulfuro de calcio (CaS)",
+      natureKey: "metal_nonmetal",
+      bondKey: "ionic",
+      bond_ca: "Enllaç Iònic",
+      bond_es: "Enlace Iónico",
+      hardness_ca: "Alta duresa per la forta atracció entre els ions bivalents Ca²⁺ i S²⁻.",
+      hardness_es: "Alta dureza por la fuerte atracción electrostática entre los iones divalentes Ca²⁺ y S²⁻.",
+      fragility_ca: "Molt fràgil davant el cop mecànic per repulsió de càrregues.",
+      fragility_es: "Muy frágil ante el impacto mecánico por repulsión de cargas.",
+      conduct_ca: "Aïllant en sòlid; condueix la corrent en fondre's o dissoldre's.",
+      conduct_es: "Aislante en sólido; conduce la corriente al fundirse o disolverse.",
+      thermal_ca: "Punt de fusió summament elevat (> 2000 °C per ser ions divalents).",
+      thermal_es: "Punto de fusión sumamente elevado (> 2000 °C por ser iones divalentes).",
+      solub_ca: "Poc soluble en aigua però es descompon alliberant ions conductors.",
+      solub_es: "Poco soluble en agua pero se disocia desprendiendo iones conductores.",
+      exp_ca: "Format per un metall alcalinoteri (Ca) i un no-metall del grup 16 (S). Els ions Ca²⁺ i S²⁻ tenen doble càrrega, donant lloc a una energia de xarxa enorme.",
+      exp_es: "Formado por calcio (alcalinotérreo) y azufre. La presencia de iones con doble carga genera una energía de red muy grande, con un punto de fusión superior a 2000 °C."
+    },
+    {
+      id: "licl",
+      formula: "LiCl",
+      name_ca: "Clorur de liti (LiCl)",
+      name_es: "Cloruro de litio (LiCl)",
+      natureKey: "metal_nonmetal",
+      bondKey: "ionic",
+      bond_ca: "Enllaç Iònic",
+      bond_es: "Enlace Iónico",
+      hardness_ca: "Alta duresa cristal·lina típica de les sals d'halogenur alcalí.",
+      hardness_es: "Alta dureza cristalina típica de las sales de haluro alcalino.",
+      fragility_ca: "Molt fràgil al cisallament.",
+      fragility_es: "Muy frágil al cizallamiento mecánico.",
+      conduct_ca: "Aïllant en sòlid; gran conductivitat electrolítica fos o dissolt.",
+      conduct_es: "Aislante en sólido; gran conductividad electrolítica fundido o disuelto.",
+      thermal_ca: "Punt de fusió elevat (~605 °C).",
+      thermal_es: "Punto de fusión elevado (~605 °C).",
+      solub_ca: "Extraordinàriament soluble en aigua (molt higroscòpic).",
+      solub_es: "Extraordinariamente soluble en agua (muy higroscópico).",
+      exp_ca: "Sal iònica formada per liti i clor. La petita grandària del catió Li⁺ afavoreix una forta hidratació en dissolució aquosa.",
+      exp_es: "Sal iónica formada por litio y cloro. El pequeño tamaño del catión Li⁺ favorece una hidratación acuosa muy intensa."
+    }
+  ];
+
+  const NATURE_OPTIONS = {
+    ca: [
+      { key: "metal_nonmetal", label: "Metall + No-metall (diferència d'electronegativitat gran)" },
+      { key: "nonmetals", label: "Dos o més no-metalls (molècules independents discretes)" },
+      { key: "metal_pure", label: "Element metàl·lic pur (baixa electronegativitat)" },
+      { key: "covalent_network", label: "No-metall formant xarxa contínua tridimensional (C, SiO₂)" }
+    ],
+    es: [
+      { key: "metal_nonmetal", label: "Metal + No metal (gran diferencia de electronegatividad)" },
+      { key: "nonmetals", label: "Dos o más no metales (moléculas independientes discretas)" },
+      { key: "metal_pure", label: "Elemento metálico puro (baja electronegatividad)" },
+      { key: "covalent_network", label: "No metal formando red continua tridimensional (C, SiO₂)" }
+    ]
+  };
+
+  const BOND_OPTIONS = {
+    ca: [
+      { key: "ionic", label: "Enllaç Iònic (Xarxa cristal·lina d'ions)" },
+      { key: "metallic", label: "Enllaç Metàl·lic (Mar d'electrons deslocalitzats)" },
+      { key: "molecular", label: "Covalent molecular (Molècules discretes)" },
+      { key: "network", label: "Covalent reticular (Xarxa contínua d'enllaços)" }
+    ],
+    es: [
+      { key: "ionic", label: "Enlace Iónico (Red cristalina de iones)" },
+      { key: "metallic", label: "Enlace Metálico (Mar de electrones deslocalizados)" },
+      { key: "molecular", label: "Covalente molecular (Moléculas discretas)" },
+      { key: "network", label: "Covalente reticular (Red continua de enlaces)" }
+    ]
+  };
+
+  const I18N = {
+    ca: {
+      titleBrand: "EnllaçAR",
+      subBrand: "Dpto. Física y Química — Elena Ruiz Alfaro",
+      tabSim: "Simulador Microscòpic",
+      tabMode1: "Deducció d'Enllaç",
+      tabMode2: "Detective de Propietats",
+      tabGame: "Assajos a Cegues",
+      lblConfigHeading: "CONFIGURACIÓ",
+      lblSidebarStudent: "👤 Alumne/a:",
+      lblProgressHeading: "PROGRÉS DE SESSIÓ",
+      lblStatSidebarM1: "Enllaç:",
+      lblStatSidebarM2: "Propietats:",
+      lblStatSidebarGame: "Mostres:",
+      lblBtnGeneratePdf: "Generar PDF de Sessió",
+      tagSimCategory: "Laboratori Visual Interactiu",
+      tagSimSub: "Estructura i Forces",
+      tagM1Cat: "Enfocament Deductiu",
+      tagM1Sub: "Naturalesa ➔ Tipus d'Enllaç",
+      lblM1PromptSub: "Sustància Assignada:",
+      m1PromptHint: "Observa la posició dels àtoms a la taula periòdica.",
+      lblM1Step1: "Pas 1: Quina és la naturalesa dels elements que constitueixen aquesta substància?",
+      lblM1Step2: "Pas 2: D'acord amb els elements, quin model d'enllaç químic s'estableix?",
+      lblM1Next: "Següent repte ➜",
+      tagM2Cat: "Detective de Propietats",
+      tagM2Sub: "Macroscòpic ➔ Microscòpic",
+      lblM2PromptSub: "PROPIETATS EXPERIMENTALS OBSERVADES:",
+      lblM2Step1: "Pas 1: A quin tipus d'enllaç o estructura correspon aquest comportament?",
+      lblM2Step2: "Pas 2: Quina de les següents substàncies és compatible amb aquestes propietats?",
+      lblM2Next: "Següent enigma ➜",
+      tagGameCat: "Laboratori a Cegues",
+      lblAssaysCount: "Assajos utilitzats:",
+      lblSampleId: "Mostra desconeguda:",
+      lblDynamicPoolNote: "(Pool de 6 candidats seleccionats a l'atzar en aquest repte)",
+      lblSelectCandidate: "Substàncies candidates en aquest torn (fes clic per validar o descartar la teva hipòtesi):",
+      headingAssays: "Assajos de laboratori disponibles:",
+      tTitleHardness: "1. Assaig de duresa",
+      tDescHardness: "Resistència de la superfície a ser ratllada.",
+      tTitleFragility: "2. Fragilitat i xoc",
+      tDescFragility: "Impacte mecànic (fràgil enfront de mal·leable / dúctil).",
+      tTitleConduct: "3. Conductivitat elèctrica",
+      tDescConduct: "Pas de corrent en sòlid i fos / dissolt.",
+      tTitleThermal: "4. Assaig tèrmic",
+      tDescThermal: "Temperatura necessària per fondre la substància.",
+      tTitleSolub: "5. Solubilitat en aigua (dissolvent polar)",
+      tDescSolub: "Capacitat de solvatació i interacció amb dipols d'H₂O.",
+      btnRun: "Executar assaig",
+      pending: "Pendent",
+      labelBtnNewMystery: "Següent mostra desconeguda ➜",
+      btnHammer: "Cop de martell (Fragilitat)",
+      btnTension: "Aplicar tracció (Mal·leabilitat)",
+      btnHeat: "Escalfar mostra (Fusió)",
+      btnPress: "Pressió mecànica (Duresa)",
+      btnReset: "Restablir",
+      stableBadge: "Estructura cristal·lina estable",
+      fracturedBadge: "⚡ Fractura per repulsió de càrregues iguals",
+      deformedBadge: "✓ Lliscament de plans sense ruptura",
+      meltedBadge: "♨ Dispersió de molècules (forces intermoleculars vençudes)",
+      rigidBadge: "🛡 Xarxa indeformable (enllaços covalents ferms)",
+      simIonic: "<strong>Xarxa iònica:</strong> Cations (+) i anions (-) alternats formant una xarxa tridimensional compacta. Presenta <strong>alta duresa</strong>. En rebre un cop mecànic, les capes d'ions es desplacen; en enfrontar-se càrregues del mateix signe, apareixen intenses forces de repulsió electroestàtica que provoquen la ruptura immediata del cristall (<strong>gran fragilitat</strong>).",
+      simMetallic: "<strong>Xarxa metàl·lica:</strong> Cations ordenats immersos en un mar d'electrons deslocalitzats. Presenta <strong>duresa mitjana</strong> i una gran <strong>mal·leabilitat i ductilitat</strong>: els plans d'àtoms llisquen uns sobre els altres sota pressió sense trencar-se.",
+      simMolecular: "<strong>Covalent molecular:</strong> Molècules discretes unides per forces intermoleculars febles. Són <strong>sòlids tous</strong> i <strong>quebradissos</strong>, amb punts de fusió i ebullició molt baixos.",
+      simNetwork: "<strong>Covalent reticular:</strong> Estructura gegant tridimensional on tots els àtoms estan units per enllaços covalents continus molt forts. Presenta <strong>duresa extrema</strong> (resistència al ratllat) i un punt de fusió excepcionalment elevat (> 1600 °C).",
+      discardedMsg: "descartada. Els resultats experimentals obtinguts no concorden amb les seves propietats!",
+      solvedMsg: "Exacte! Has identificat correctament la substància",
+      usedTrials: "Has resolt la mostra utilitzant",
+      of5Tests: "de 5 assajos de laboratori.",
+      lblPrintDate: "Data:",
+      lblPrintTime: "Temps:",
+      lblStudentCard: "Estudiant:",
+      lblStatM1: "Deducció d'enllaç",
+      lblStatM2: "Detective de propietats",
+      lblStatGame: "Mostres descobertes",
+      lblAuditTitle: "Auditoria detallada de respostes:",
+      thMode: "Modalitat",
+      thSubstance: "Substància / Enigma",
+      thAnswer: "Resposta de l'alumne",
+      thResult: "Resultat",
+      btnCancelReport: "Tancar",
+      btnPrintReport: "Descarregar PDF / Imprimir",
+      noRecordsText: "Encara no s'ha registrat cap resposta en aquesta sessió."
+    },
+    es: {
+      titleBrand: "EnllaçAR",
+      subBrand: "Dpto. Física y Química — Elena Ruiz Alfaro",
+      tabSim: "Simulador Microscópico",
+      tabMode1: "Deducción de Enlace",
+      tabMode2: "Detective de Propiedades",
+      tabGame: "Ensayos a Ciegas",
+      lblConfigHeading: "CONFIGURACIÓN",
+      lblSidebarStudent: "👤 Alumno/a:",
+      lblProgressHeading: "PROGRESO DE SESIÓN",
+      lblStatSidebarM1: "Enlace:",
+      lblStatSidebarM2: "Propiedades:",
+      lblStatSidebarGame: "Muestras:",
+      lblBtnGeneratePdf: "Generar PDF de Sesión",
+      tagSimCategory: "Laboratorio Visual Interactivo",
+      tagSimSub: "Estructura y Fuerzas",
+      tagM1Cat: "Enfoque Deductivo",
+      tagM1Sub: "Naturaleza ➔ Tipo de Enlace",
+      lblM1PromptSub: "Sustancia Asignada:",
+      m1PromptHint: "Observa la posición de los átomos en la tabla periódica.",
+      lblM1Step1: "Paso 1: ¿Cuál es la naturaleza de los elementos que constituyen esta sustancia?",
+      lblM1Step2: "Paso 2: De acuerdo con los elementos, ¿qué modelo de enlace químico se establece?",
+      lblM1Next: "Siguiente reto ➜",
+      tagM2Cat: "Detective de Propiedades",
+      tagM2Sub: "Macroscópico ➔ Microscópico",
+      lblM2PromptSub: "PROPIEDADES EXPERIMENTALES OBSERVADAS:",
+      lblM2Step1: "Paso 1: ¿A qué tipo de enlace o estructura corresponde este comportamiento?",
+      lblM2Step2: "Paso 2: ¿Cuál de las siguientes sustancias es compatible con estas propiedades?",
+      lblM2Next: "Siguiente enigma ➜",
+      tagGameCat: "Laboratorio a Ciegas",
+      lblAssaysCount: "Ensayos usados:",
+      lblSampleId: "Muestra desconocida:",
+      lblDynamicPoolNote: "(Pool de 6 candidatos seleccionados al azar en este reto)",
+      lblSelectCandidate: "Sustancias candidatas en este turno (haz clic para validar o descartar tu hipótesis):",
+      headingAssays: "Ensayos de laboratorio disponibles:",
+      tTitleHardness: "1. Ensayo de dureza",
+      tDescHardness: "Resistencia de la superficie a ser rayada.",
+      tTitleFragility: "2. Fragilidad y choque",
+      tDescFragility: "Impacto mecánico (frágil frente a maleable / dúctil).",
+      tTitleConduct: "3. Conductividad eléctrica",
+      tDescConduct: "Paso de corriente en sólido y fundido / disuelto.",
+      tTitleThermal: "4. Ensayo térmico",
+      tDescThermal: "Temperatura necesaria para fundir la sustancia.",
+      tTitleSolub: "5. Solubilidad en agua (solvente polar)",
+      tDescSolub: "Capacidad de solvatación e interacción con dipolos de H₂O.",
+      btnRun: "Ejecutar ensayo",
+      pending: "Pendiente",
+      labelBtnNewMystery: "Siguiente muestra desconocida ➜",
+      btnHammer: "Golpe mecánico (Fragilidad)",
+      btnTension: "Aplicar tracción (Maleabilidad)",
+      btnHeat: "Calentar muestra (Fusión)",
+      btnPress: "Presión mecánica (Dureza)",
+      btnReset: "Restablecer",
+      stableBadge: "Estructura cristalina estable",
+      fracturedBadge: "⚡ Fractura por repulsión de cargas del mismo signo",
+      deformedBadge: "✓ Deslizamiento de planos sin ruptura",
+      meltedBadge: "♨ Dispersión de moléculas (fuerzas intermoleculares vencidas)",
+      rigidBadge: "🛡 Red indeformable (enlaces covalentes firmes)",
+      simIonic: "<strong>Red iónica:</strong> Cationes (+) y aniones (-) alternados en red compacta. Presenta <strong>alta dureza</strong>. Al recibir un impacto mecánico, las capas de iones se desplazan; al enfrentarse cargas del mismo signo, surgen intensas repulsiones que provocan la fractura inmediata del cristal (<strong>gran fragilidad</strong>).",
+      simMetallic: "<strong>Red metálica:</strong> Cationes ordenados inmersos en un mar de electrones deslocalizados. Presenta <strong>dureza media</strong> y gran <strong>maleabilidad y ductilidad</strong>: los planos de átomos se deslizan unos sobre otros bajo presión sin romperse.",
+      simMolecular: "<strong>Covalente molecular:</strong> Moléculas discretas unidas por fuerzas intermoleculares débiles. Son <strong>sólidos blandos</strong> y <strong>quebradizos</strong>, con puntos de fusión y ebullición muy bajos.",
+      simNetwork: "<strong>Covalente reticular:</strong> Estructura gigante tridimensional donde todos los átomos están unidos por enlaces covalentes continuos muy fuertes. Presenta <strong>dureza extrema</strong> (resistencia máxima al rayado) y un punto de fusión excepcionalmente elevado (> 1600 °C).",
+      discardedMsg: "descartada. ¡Los resultados experimentales obtenidos no concuerdan con sus propiedades!",
+      solvedMsg: "¡Exacto! Has identificado correctamente la sustancia",
+      usedTrials: "Has resuelto la muestra utilizando",
+      of5Tests: "de 5 ensayos de laboratorio.",
+      lblPrintDate: "Fecha:",
+      lblPrintTime: "Tiempo:",
+      lblStudentCard: "Estudiante:",
+      lblStatM1: "Deducción de Enlace",
+      lblStatM2: "Detective de Propiedades",
+      lblStatGame: "Muestras descubiertas",
+      lblAuditTitle: "Auditoría detallada de respuestas:",
+      thMode: "Modalidad",
+      thSubstance: "Sustancia / Enigma",
+      thAnswer: "Respuesta del alumno",
+      thResult: "Resultado",
+      btnCancelReport: "Cerrar",
+      btnPrintReport: "Descargar PDF / Imprimir",
+      noRecordsText: "Aún no se ha registrado ninguna respuesta en esta sesión."
+    }
+  };
+
+  /* ================== Simulation Setup ================== */
+  const canvas = document.getElementById('canvasSim');
+  const ctx = canvas.getContext('2d');
+  let currentBond = 'ionic';
+  let simTime = 0;
+  let animState = { actionActive: false, displaceY: 0 };
+
+  function selectBond(type) {
+    currentBond = type;
+    animState.actionActive = false;
+    animState.displaceY = 0;
+
+    document.querySelectorAll('.sim-button-row .sim-selector-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.id === ('btnBond' + capitalize(type)));
+    });
+
+    updateSimulatorLabels();
+  }
+
+  function capitalize(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  function performSimAction() {
+    animState.actionActive = true;
+    updateSimulatorBadge();
+  }
+
+  function resetSimAction() {
+    animState.actionActive = false;
+    animState.displaceY = 0;
+    updateSimulatorBadge();
+  }
+
+  function updateSimulatorBadge() {
+    const badge = document.getElementById('simLiveBadge');
+    const t = I18N[currentLang];
+    if (!animState.actionActive) {
+      badge.textContent = t.stableBadge;
+      badge.style.color = "#334155";
+    } else {
+      if (currentBond === 'ionic') {
+        badge.textContent = t.fracturedBadge;
+        badge.style.color = "#dc2626";
+      } else if (currentBond === 'metallic') {
+        badge.textContent = t.deformedBadge;
+        badge.style.color = "#16a34a";
+      } else if (currentBond === 'molecular') {
+        badge.textContent = t.meltedBadge;
+        badge.style.color = "#d97706";
+      } else if (currentBond === 'network') {
+        badge.textContent = t.rigidBadge;
+        badge.style.color = "#4f46e5";
+      }
+    }
+  }
+
+  function updateSimulatorLabels() {
+    const t = I18N[currentLang];
+    const actionLabel = document.getElementById('labelSimAction');
+
+    if (currentBond === 'ionic') {
+      actionLabel.textContent = t.btnHammer;
+      document.getElementById('simTheoryText').innerHTML = t.simIonic;
+    } else if (currentBond === 'metallic') {
+      actionLabel.textContent = t.btnTension;
+      document.getElementById('simTheoryText').innerHTML = t.simMetallic;
+    } else if (currentBond === 'molecular') {
+      actionLabel.textContent = t.btnHeat;
+      document.getElementById('simTheoryText').innerHTML = t.simMolecular;
+    } else if (currentBond === 'network') {
+      actionLabel.textContent = t.btnPress;
+      document.getElementById('simTheoryText').innerHTML = t.simNetwork;
+    }
+    updateSimulatorBadge();
+  }
+
+  function renderSimulator() {
+    simTime += 0.035;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (currentBond === 'ionic') {
+      const cols = 11, rows = 4, spacing = 44, startX = 140, startY = 50;
+      const targetDisplace = animState.actionActive ? 22 : 0;
+      animState.displaceY += (targetDisplace - animState.displaceY) * 0.12;
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const isPositive = (r + c) % 2 === 0;
+          let x = startX + c * spacing;
+          let y = startY + r * spacing;
+
+          if (r < 2 && animState.actionActive) {
+            x += 22; // aligns identical charges face to face
+            y -= animState.displaceY;
+          }
+
+          ctx.beginPath();
+          ctx.arc(x, y, isPositive ? 12 : 16, 0, Math.PI * 2);
+          ctx.fillStyle = isPositive ? '#6366f1' : '#10b981';
+          ctx.fill();
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = '#312e81';
+          ctx.stroke();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 13px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(isPositive ? '+' : '−', x, y);
+        }
+      }
+
+      if (animState.actionActive) {
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 3;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(startX - 15, startY + spacing * 1.5 - animState.displaceY * 0.5);
+        ctx.lineTo(startX + cols * spacing + 15, startY + spacing * 1.5 - animState.displaceY * 0.5);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+    } else if (currentBond === 'metallic') {
+      const cols = 9, rows = 3, spacing = 52, startX = 155, startY = 65;
+      const shiftX = animState.actionActive ? 28 : 0;
+
+      for (let i = 0; i < 42; i++) {
+        const ex = ((i * 71 + simTime * 65) % (cols * spacing + 60)) + startX - 25;
+        const ey = ((i * 43 + Math.sin(simTime + i) * 22) % (rows * spacing + 40)) + startY - 15;
+        ctx.beginPath();
+        ctx.arc(ex, ey, 3.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#f59e0b';
+        ctx.fill();
+      }
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = startX + c * spacing + (r === 0 ? shiftX : 0);
+          const y = startY + r * spacing;
+
+          ctx.beginPath();
+          ctx.arc(x, y, 16, 0, Math.PI * 2);
+          ctx.fillStyle = '#f97316';
+          ctx.fill();
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = '#9a3412';
+          ctx.stroke();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.font = 'bold 11px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('M⁺', x, y);
+        }
+      }
+
+    } else if (currentBond === 'molecular') {
+      const molCount = 9;
+      const spreadFactor = animState.actionActive ? 1.7 : 0.85;
+
+      for (let i = 0; i < molCount; i++) {
+        const baseAngle = (i / molCount) * Math.PI * 2;
+        const radius = (animState.actionActive ? 90 : 55) + Math.sin(simTime * 2 + i) * (animState.actionActive ? 20 : 6);
+        const mx = canvas.width / 2 + Math.cos(baseAngle) * radius * spreadFactor;
+        const my = 125 + Math.sin(baseAngle) * radius * 0.75;
+
+        ctx.beginPath();
+        ctx.arc(mx, my, 13, 0, Math.PI * 2);
+        ctx.fillStyle = '#ef4444';
+        ctx.fill();
+        ctx.strokeStyle = '#991b1b';
+        ctx.stroke();
+
+        [-10, 10].forEach(ox => {
+          ctx.beginPath();
+          ctx.arc(mx + ox, my - 10, 7, 0, Math.PI * 2);
+          ctx.fillStyle = '#94a3b8';
+          ctx.fill();
+          ctx.strokeStyle = '#475569';
+          ctx.stroke();
+        });
+
+        if (!animState.actionActive && i > 0) {
+          ctx.beginPath();
+          ctx.setLineDash([3, 4]);
+          ctx.strokeStyle = '#cbd5e1';
+          ctx.lineWidth = 1;
+          ctx.moveTo(mx, my);
+          const prevAngle = ((i - 1) / molCount) * Math.PI * 2;
+          const px = canvas.width / 2 + Math.cos(prevAngle) * 55 * spreadFactor;
+          const py = 125 + Math.sin(prevAngle) * 55 * 0.75;
+          ctx.lineTo(px, py);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+      }
+
+    } else if (currentBond === 'network') {
+      const nodes = [
+        {x: 290, y: 55}, {x: 380, y: 55}, {x: 470, y: 55},
+        {x: 245, y: 115}, {x: 335, y: 115}, {x: 425, y: 115}, {x: 515, y: 115},
+        {x: 290, y: 175}, {x: 380, y: 175}, {x: 470, y: 175},
+        {x: 245, y: 235}, {x: 335, y: 235}, {x: 425, y: 235}
+      ];
+
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 4;
+      nodes.forEach((n1) => {
+        nodes.forEach((n2) => {
+          const d = Math.hypot(n1.x - n2.x, n1.y - n2.y);
+          if (d > 70 && d < 105) {
+            ctx.beginPath();
+            ctx.moveTo(n1.x, n1.y);
+            ctx.lineTo(n2.x, n2.y);
+            ctx.stroke();
+          }
+        });
+      });
+
+      nodes.forEach(n => {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, 11, 0, Math.PI * 2);
+        ctx.fillStyle = '#334155';
+        ctx.fill();
+        ctx.strokeStyle = '#0f172a';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+    }
+
+    if (document.getElementById('sectionSim').style.display !== 'none') {
+      requestAnimationFrame(renderSimulator);
+    }
+  }
+
+  /* ================== Gamification Tracker ================== */
+  function addStreakSuccess() {
+    totalScore++;
+    currentStreak++;
+    if (totalScore > recordScore) recordScore = totalScore;
+    updateHeaderStats();
+  }
+
+  function resetStreakFail() {
+    currentStreak = 0;
+    updateHeaderStats();
+  }
+
+  function updateHeaderStats() {
+    document.getElementById('headScore').textContent = totalScore;
+    document.getElementById('headRecord').textContent = recordScore;
+    document.getElementById('headStreak').textContent = currentStreak;
+  }
+
+  /* ================== Mode 1: Bond Deduction ================== */
+  let m1CurrentItem = null;
+  let m1Step1Done = false;
+
+  function setupMode1() {
+    m1Step1Done = false;
+    document.getElementById('m1Step2Container').style.display = 'none';
+    document.getElementById('btnM1Next').style.display = 'none';
+    const fb = document.getElementById('m1Feedback');
+    fb.className = 'feedback-banner-modern';
+    fb.style.display = 'none';
+
+    m1CurrentItem = DATABASE[Math.floor(Math.random() * DATABASE.length)];
+    const title = currentLang === 'ca' ? m1CurrentItem.name_ca : m1CurrentItem.name_es;
+    document.getElementById('m1SubstanceTitle').textContent = title;
+
+    const s1Container = document.getElementById('m1Step1Options');
+    s1Container.innerHTML = '';
+    const natureList = NATURE_OPTIONS[currentLang];
+    natureList.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-quiz-option';
+      btn.textContent = opt.label;
+      btn.onclick = () => handleM1Step1Choice(opt.key, btn);
+      s1Container.appendChild(btn);
+    });
+  }
+
+  function handleM1Step1Choice(selectedKey, btn) {
+    if (m1Step1Done) return;
+    const isCorrect = selectedKey === m1CurrentItem.natureKey;
+    const allBtns = document.querySelectorAll('#m1Step1Options .btn-quiz-option');
+    allBtns.forEach(b => b.disabled = true);
+    const fb = document.getElementById('m1Feedback');
+
+    if (isCorrect) {
+      m1Step1Done = true;
+      btn.classList.add('correct');
+      fb.className = 'feedback-banner-modern correct show';
+      fb.innerHTML = currentLang === 'ca'
+        ? `<strong>✓ Excel·lent:</strong> Identificació correcta dels elements. Ara passa al <strong>Pas 2</strong>.`
+        : `<strong>✓ Excelente:</strong> Identificación correcta de los elementos. Ahora pasa al <strong>Paso 2</strong>.`;
+      document.getElementById('m1Step2Container').style.display = 'block';
+      renderM1Step2();
+    } else {
+      btn.classList.add('incorrect');
+      allBtns.forEach(b => {
+        if (b.textContent.includes(NATURE_OPTIONS[currentLang].find(o => o.key === m1CurrentItem.natureKey).label)) {
+          b.classList.add('correct');
+        }
+      });
+      fb.className = 'feedback-banner-modern error show';
+      fb.innerHTML = currentLang === 'ca'
+        ? `<strong>Compte:</strong> Revisa la posició dels elements a la taula periòdica.`
+        : `<strong>Cuidado:</strong> Revisa la posición de los elementos en la tabla periódica.`;
+      document.getElementById('m1Step2Container').style.display = 'block';
+      renderM1Step2();
+    }
+  }
+
+  function renderM1Step2() {
+    const s2Container = document.getElementById('m1Step2Options');
+    s2Container.innerHTML = '';
+    const bondList = BOND_OPTIONS[currentLang];
+    bondList.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-quiz-option';
+      btn.textContent = opt.label;
+      btn.onclick = () => handleM1Step2Choice(opt.key, btn);
+      s2Container.appendChild(btn);
+    });
+  }
+
+  function handleM1Step2Choice(selectedKey, btn) {
+    const isCorrect = selectedKey === m1CurrentItem.bondKey;
+    const allBtns = document.querySelectorAll('#m1Step2Options .btn-quiz-option');
+    allBtns.forEach(b => b.disabled = true);
+    const fb = document.getElementById('m1Feedback');
+    const explanation = currentLang === 'ca' ? m1CurrentItem.exp_ca : m1CurrentItem.exp_es;
+
+    sessionAuditLog.push({
+      mode: currentLang === 'ca' ? 'Mode 1 (Deducció)' : 'Modo 1 (Deducción)',
+      target: currentLang === 'ca' ? m1CurrentItem.name_ca : m1CurrentItem.name_es,
+      answer: BOND_OPTIONS[currentLang].find(o => o.key === selectedKey)?.label || selectedKey,
+      isCorrect: isCorrect,
+      timestamp: formatTimerTime(timerSeconds)
+    });
+
+    if (isCorrect) {
+      btn.classList.add('correct');
+      m1Score++;
+      document.getElementById('sidebarM1Score').textContent = m1Score;
+      addStreakSuccess();
+      fb.className = 'feedback-banner-modern correct show';
+      fb.innerHTML = `<strong>🎉 ${currentLang === 'ca' ? 'Enllaç deduït correctament!' : '¡Enlace deducido correctamente!'}</strong><br><br>${explanation}`;
+    } else {
+      btn.classList.add('incorrect');
+      resetStreakFail();
+      allBtns.forEach(b => {
+        if (b.textContent.includes(BOND_OPTIONS[currentLang].find(o => o.key === m1CurrentItem.bondKey).label)) {
+          b.classList.add('correct');
+        }
+      });
+      fb.className = 'feedback-banner-modern error show';
+      fb.innerHTML = `<strong>${currentLang === 'ca' ? 'Enllaç incorrecte:' : 'Enlace incorrecto:'}</strong> ${currentLang === 'ca' ? m1CurrentItem.bond_ca : m1CurrentItem.bond_es}.<br><br>${explanation}`;
+    }
+
+    document.getElementById('btnM1Next').style.display = 'inline-flex';
+  }
+
+  function nextMode1Challenge() {
+    setupMode1();
+  }
+
+  /* ================== Mode 2: Property Detective ================== */
+  let m2CurrentItem = null;
+  let m2Step1Done = false;
+
+  function setupMode2() {
+    m2Step1Done = false;
+    document.getElementById('m2Step2Container').style.display = 'none';
+    document.getElementById('btnM2Next').style.display = 'none';
+    const fb = document.getElementById('m2Feedback');
+    fb.className = 'feedback-banner-modern';
+    fb.style.display = 'none';
+
+    m2CurrentItem = DATABASE[Math.floor(Math.random() * DATABASE.length)];
+
+    const clueText = currentLang === 'ca'
+      ? `"${m2CurrentItem.thermal_ca} ${m2CurrentItem.conduct_ca} ${m2CurrentItem.hardness_ca} ${m2CurrentItem.fragility_ca} ${m2CurrentItem.solub_ca}"`
+      : `"${m2CurrentItem.thermal_es} ${m2CurrentItem.conduct_es} ${m2CurrentItem.hardness_es} ${m2CurrentItem.fragility_es} ${m2CurrentItem.solub_es}"`;
+
+    document.getElementById('m2PropertiesClue').textContent = clueText;
+
+    const s1Container = document.getElementById('m2Step1Options');
+    s1Container.innerHTML = '';
+    const bondList = BOND_OPTIONS[currentLang];
+    bondList.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-quiz-option';
+      btn.textContent = opt.label;
+      btn.onclick = () => handleM2Step1Choice(opt.key, btn);
+      s1Container.appendChild(btn);
+    });
+  }
+
+  function handleM2Step1Choice(selectedKey, btn) {
+    if (m2Step1Done) return;
+    const isCorrect = selectedKey === m2CurrentItem.bondKey;
+    const allBtns = document.querySelectorAll('#m2Step1Options .btn-quiz-option');
+    allBtns.forEach(b => b.disabled = true);
+    const fb = document.getElementById('m2Feedback');
+
+    if (isCorrect) {
+      m2Step1Done = true;
+      btn.classList.add('correct');
+      fb.className = 'feedback-banner-modern correct show';
+      fb.innerHTML = currentLang === 'ca'
+        ? `<strong>✓ Raonament encertat:</strong> Aquestes propietats caracteritzen l'<strong>${m2CurrentItem.bond_ca}</strong>. Ara tria la substància al Pas 2.`
+        : `<strong>✓ Razonamiento acertado:</strong> Estas propiedades caracterizan al <strong>${m2CurrentItem.bond_es}</strong>. Ahora elige la sustancia en el Paso 2.`;
+      document.getElementById('m2Step2Container').style.display = 'block';
+      renderM2Step2();
+    } else {
+      btn.classList.add('incorrect');
+      allBtns.forEach(b => {
+        if (b.textContent.includes(BOND_OPTIONS[currentLang].find(o => o.key === m2CurrentItem.bondKey).label)) {
+          b.classList.add('correct');
+        }
+      });
+      fb.className = 'feedback-banner-modern error show';
+      fb.innerHTML = currentLang === 'ca'
+        ? `<strong>Revisa les dades:</strong> Correspon a un <strong>${m2CurrentItem.bond_ca}</strong>.`
+        : `<strong>Revisa los datos:</strong> Corresponde a un <strong>${m2CurrentItem.bond_es}</strong>.`;
+      document.getElementById('m2Step2Container').style.display = 'block';
+      renderM2Step2();
+    }
+  }
+
+  function renderM2Step2() {
+    const s2Container = document.getElementById('m2Step2Options');
+    s2Container.innerHTML = '';
+
+    let candidates = [m2CurrentItem];
+    const others = DATABASE.filter(item => item.id !== m2CurrentItem.id);
+    shuffleArray(others);
+    candidates.push(others[0], others[1], others[2]);
+    shuffleArray(candidates);
+
+    candidates.forEach(sub => {
+      const btn = document.createElement('button');
+      btn.className = 'btn-quiz-option';
+      btn.textContent = currentLang === 'ca' ? sub.name_ca : sub.name_es;
+      btn.onclick = () => handleM2Step2Choice(sub, btn);
+      s2Container.appendChild(btn);
+    });
+  }
+
+  function handleM2Step2Choice(selectedSub, btn) {
+    const isCorrect = selectedSub.id === m2CurrentItem.id;
+    const allBtns = document.querySelectorAll('#m2Step2Options .btn-quiz-option');
+    allBtns.forEach(b => b.disabled = true);
+    const fb = document.getElementById('m2Feedback');
+    const explanation = currentLang === 'ca' ? m2CurrentItem.exp_ca : m2CurrentItem.exp_es;
+
+    sessionAuditLog.push({
+      mode: currentLang === 'ca' ? 'Mode 2 (Detectiu)' : 'Modo 2 (Detective)',
+      target: currentLang === 'ca' ? m2CurrentItem.bond_ca : m2CurrentItem.bond_es,
+      answer: currentLang === 'ca' ? selectedSub.name_ca : selectedSub.name_es,
+      isCorrect: isCorrect,
+      timestamp: formatTimerTime(timerSeconds)
+    });
+
+    if (isCorrect) {
+      btn.classList.add('correct');
+      m2Score++;
+      document.getElementById('sidebarM2Score').textContent = m2Score;
+      addStreakSuccess();
+      fb.className = 'feedback-banner-modern correct show';
+      fb.innerHTML = `<strong>🎉 ${currentLang === 'ca' ? 'Substància identificada amb èxit!' : '¡Sustancia identificada con éxito!'}</strong><br><br>${explanation}`;
+    } else {
+      btn.classList.add('incorrect');
+      resetStreakFail();
+      allBtns.forEach(b => {
+        if (b.textContent.includes(currentLang === 'ca' ? m2CurrentItem.name_ca : m2CurrentItem.name_es)) {
+          b.classList.add('correct');
+        }
+      });
+      fb.className = 'feedback-banner-modern error show';
+      fb.innerHTML = `<strong>${currentLang === 'ca' ? 'Substància incorrecta:' : 'Sustancia incorrecta:'}</strong> ${currentLang === 'ca' ? m2CurrentItem.name_ca : m2CurrentItem.name_es}.<br><br>${explanation}`;
+    }
+
+    document.getElementById('btnM2Next').style.display = 'inline-flex';
+  }
+
+  function nextMode2Challenge() {
+    setupMode2();
+  }
+
+  /* ================== Blind Testing Game (Dynamic Pool) ================== */
+  let currentMystery = null;
+  let testsUsed = 0;
+  let gameSolved = false;
+  let activeCandidatePool = [];
+
+  function setupNewMysteryGame() {
+    gameSolved = false;
+    testsUsed = 0;
+    document.getElementById('numTestsUsed').textContent = testsUsed;
+    document.getElementById('btnNewMystery').style.display = 'none';
+
+    const feedbackBox = document.getElementById('boxGameFeedback');
+    feedbackBox.className = 'feedback-banner-modern';
+    feedbackBox.style.display = 'none';
+
+    // Pick random mystery target from the 16 substances
+    currentMystery = DATABASE[Math.floor(Math.random() * DATABASE.length)];
+    document.getElementById('tagMystery').textContent = `#${Math.floor(Math.random() * 900 + 100)}`;
+
+    // Reset tests boxes
+    ['Hardness', 'Fragility', 'Conductivity', 'Thermal', 'Solubility'].forEach(test => {
+      const resElem = document.getElementById(`res${test}`);
+      resElem.textContent = I18N[currentLang].pending;
+      resElem.className = 'test-result-indicator';
+      const btn = document.getElementById(`btnTest${test}`);
+      if (btn) btn.disabled = false;
+    });
+
+    // Pick a dynamic randomized pool of 6 candidate substances:
+    // always includes the mystery substance + 5 random distractors
+    const poolWithoutMystery = DATABASE.filter(item => item.id !== currentMystery.id);
+    shuffleArray(poolWithoutMystery);
+    activeCandidatePool = [currentMystery, ...poolWithoutMystery.slice(0, 5)];
+    shuffleArray(activeCandidatePool);
+
+    renderCandidates();
+  }
+
+  function renderCandidates() {
+    const container = document.getElementById('boxCandidates');
+    container.innerHTML = '';
+
+    activeCandidatePool.forEach(item => {
+      const chip = document.createElement('div');
+      chip.className = 'candidate-chip-interactive';
+      chip.textContent = currentLang === 'ca' ? item.name_ca : item.name_es;
+      chip.onclick = () => verifyHypothesis(item, chip);
+      container.appendChild(chip);
+    });
+  }
+
+  function executeBlindTest(typeKey) {
+    if (gameSolved) return;
+    testsUsed++;
+    document.getElementById('numTestsUsed').textContent = testsUsed;
+
+    let targetBox, btnElem, textValue;
+
+    if (typeKey === 'hardness') {
+      targetBox = document.getElementById('resHardness');
+      btnElem = document.getElementById('btnTestHardness');
+      textValue = currentLang === 'ca' ? currentMystery.hardness_ca : currentMystery.hardness_es;
+    } else if (typeKey === 'fragility') {
+      targetBox = document.getElementById('resFragility');
+      btnElem = document.getElementById('btnTestFragility');
+      textValue = currentLang === 'ca' ? currentMystery.fragility_ca : currentMystery.fragility_es;
+    } else if (typeKey === 'conduct') {
+      targetBox = document.getElementById('resConductivity');
+      btnElem = document.getElementById('btnTestConductivity');
+      textValue = currentLang === 'ca' ? currentMystery.conduct_ca : currentMystery.conduct_es;
+    } else if (typeKey === 'thermal') {
+      targetBox = document.getElementById('resThermal');
+      btnElem = document.getElementById('btnTestThermal');
+      textValue = currentLang === 'ca' ? currentMystery.thermal_ca : currentMystery.thermal_es;
+    } else if (typeKey === 'solub') {
+      targetBox = document.getElementById('resSolubility');
+      btnElem = document.getElementById('btnTestSolubility');
+      textValue = currentLang === 'ca' ? currentMystery.solub_ca : currentMystery.solub_es;
+    }
+
+    targetBox.textContent = textValue;
+    targetBox.classList.add('active');
+    btnElem.disabled = true;
+  }
+
+  function verifyHypothesis(item, chipElement) {
+    if (gameSolved || chipElement.classList.contains('discarded')) return;
+    const t = I18N[currentLang];
+    const feedbackBox = document.getElementById('boxGameFeedback');
+
+    if (item.id === currentMystery.id) {
+      gameSolved = true;
+      chipElement.classList.add('winner');
+      gameSamplesSolved++;
+      document.getElementById('sidebarGameScore').textContent = gameSamplesSolved;
+      addStreakSuccess();
+
+      sessionAuditLog.push({
+        mode: currentLang === 'ca' ? 'Assajos a cegues' : 'Ensayos a ciegas',
+        target: currentLang === 'ca' ? currentMystery.name_ca : currentMystery.name_es,
+        answer: `${currentLang === 'ca' ? item.name_ca : item.name_es} (${testsUsed} ${currentLang === 'ca' ? 'assajos' : 'ensayos'})`,
+        isCorrect: true,
+        timestamp: formatTimerTime(timerSeconds)
+      });
+
+      const bondTitle = currentLang === 'ca' ? currentMystery.bond_ca : currentMystery.bond_es;
+      const explanation = currentLang === 'ca' ? currentMystery.exp_ca : currentMystery.exp_es;
+      const name = currentLang === 'ca' ? item.name_ca : item.name_es;
+
+      feedbackBox.className = 'feedback-banner-modern correct show';
+      feedbackBox.innerHTML = `<strong>🎉 ${t.solvedMsg}: ${name} (${bondTitle}).</strong><br><br>${explanation}<br><br><em>${t.usedTrials} <strong>${testsUsed}</strong> ${t.of5Tests}</em>`;
+      document.getElementById('btnNewMystery').style.display = 'inline-flex';
+    } else {
+      chipElement.classList.add('discarded');
+      resetStreakFail();
+      const name = currentLang === 'ca' ? item.name_ca : item.name_es;
+      feedbackBox.className = 'feedback-banner-modern error show';
+      feedbackBox.innerHTML = `<strong>❌ ${name}</strong> ${t.discardedMsg}`;
+
+      sessionAuditLog.push({
+        mode: currentLang === 'ca' ? 'Assajos a cegues (Descarta)' : 'Ensayos a ciegas (Descarta)',
+        target: currentLang === 'ca' ? currentMystery.name_ca : currentMystery.name_es,
+        answer: name,
+        isCorrect: false,
+        timestamp: formatTimerTime(timerSeconds)
+      });
+    }
+  }
+
+  function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+  }
+
+  /* ================== Timer Controls ================== */
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    timerInterval = setInterval(() => {
+      if (isTimerRunning) {
+        timerSeconds++;
+        updateTimerDisplay();
+      }
+    }, 1000);
+  }
+
+  function toggleTimer() {
+    isTimerRunning = !isTimerRunning;
+    document.getElementById('btnTimerToggle').textContent = isTimerRunning ? '⏸' : '▶';
+  }
+
+  function resetTimer() {
+    timerSeconds = 0;
+    updateTimerDisplay();
+  }
+
+  function updateTimerDisplay() {
+    const display = document.getElementById('timerDisplay');
+    if (display) display.textContent = formatTimerTime(timerSeconds);
+  }
+
+  function formatTimerTime(totalSecs) {
+    const mins = Math.floor(totalSecs / 60);
+    const secs = totalSecs % 60;
+    return `${mins < 10 ? '0' : ''}${mins}:${secs < 10 ? '0' : ''}${secs}`;
+  }
+
+  /* ================== Tab Switching ================== */
+  function changeTab(tab) {
+    ['sim', 'mode1', 'mode2', 'game'].forEach(tKey => {
+      const active = tKey === tab;
+      const btn = document.getElementById('tabBtn' + capitalize(tKey));
+      const sec = document.getElementById('section' + capitalize(tKey));
+      if (btn) btn.classList.toggle('active', active);
+      if (sec) sec.style.display = active ? 'block' : 'none';
+    });
+
+    if (tab === 'sim') {
+      requestAnimationFrame(renderSimulator);
+    } else if (tab === 'mode1' && !m1CurrentItem) {
+      setupMode1();
+    } else if (tab === 'mode2' && !m2CurrentItem) {
+      setupMode2();
+    }
+  }
+
+  /* ================== Language Switcher ================== */
+  function setAppLanguage(lang) {
+    currentLang = lang;
+    document.getElementById('btnLangES').classList.toggle('active', lang === 'es');
+    document.getElementById('btnLangCA').classList.toggle('active', lang === 'ca');
+
+    const t = I18N[lang];
+    document.getElementById('titleBrand').textContent = t.titleBrand;
+    document.getElementById('subBrand').textContent = t.subBrand;
+    document.getElementById('labelTabSim').textContent = t.tabSim;
+    document.getElementById('labelTabMode1').textContent = t.tabMode1;
+    document.getElementById('labelTabMode2').textContent = t.tabMode2;
+    document.getElementById('labelTabGame').textContent = t.tabGame;
+
+    document.getElementById('lblConfigHeading').textContent = t.lblConfigHeading;
+    document.getElementById('lblSidebarStudent').textContent = t.lblSidebarStudent;
+    document.getElementById('lblProgressHeading').textContent = t.lblProgressHeading;
+    document.getElementById('lblStatSidebarM1').textContent = t.lblStatSidebarM1;
+    document.getElementById('lblStatSidebarM2').textContent = t.lblStatSidebarM2;
+    document.getElementById('lblStatSidebarGame').textContent = t.lblStatSidebarGame;
+    document.getElementById('lblBtnGeneratePdf').textContent = t.lblBtnGeneratePdf;
+
+    document.getElementById('tagSimCategory').textContent = t.tagSimCategory;
+    document.getElementById('tagSimSub').textContent = t.tagSimSub;
+    document.getElementById('labelSimReset').textContent = t.btnReset;
+
+    document.getElementById('tagM1Cat').textContent = t.tagM1Cat;
+    document.getElementById('tagM1Sub').textContent = t.tagM1Sub;
+    document.getElementById('lblM1PromptSub').textContent = t.lblM1PromptSub;
+    document.getElementById('m1PromptHint').textContent = t.m1PromptHint;
+    document.getElementById('lblM1Step1').textContent = t.lblM1Step1;
+    document.getElementById('lblM1Step2').textContent = t.lblM1Step2;
+    document.getElementById('lblM1Next').textContent = t.lblM1Next;
+
+    document.getElementById('tagM2Cat').textContent = t.tagM2Cat;
+    document.getElementById('tagM2Sub').textContent = t.tagM2Sub;
+    document.getElementById('lblM2PromptSub').textContent = t.lblM2PromptSub;
+    document.getElementById('lblM2Step1').textContent = t.lblM2Step1;
+    document.getElementById('lblM2Step2').textContent = t.lblM2Step2;
+    document.getElementById('lblM2Next').textContent = t.lblM2Next;
+
+    document.getElementById('tagGameCat').textContent = t.tagGameCat;
+    document.getElementById('lblAssaysCount').textContent = t.lblAssaysCount;
+    document.getElementById('lblSampleId').textContent = t.lblSampleId;
+    document.getElementById('lblDynamicPoolNote').textContent = t.lblDynamicPoolNote;
+    document.getElementById('lblSelectCandidate').textContent = t.lblSelectCandidate;
+    document.getElementById('headingAssays').textContent = t.headingAssays;
+
+    document.getElementById('tTitleHardness').textContent = t.tTitleHardness;
+    document.getElementById('tDescHardness').textContent = t.tDescHardness;
+    document.getElementById('tTitleFragility').textContent = t.tTitleFragility;
+    document.getElementById('tDescFragility').textContent = t.tDescFragility;
+    document.getElementById('tTitleConduct').textContent = t.tTitleConduct;
+    document.getElementById('tDescConduct').textContent = t.tDescConduct;
+    document.getElementById('tTitleThermal').textContent = t.tTitleThermal;
+    document.getElementById('tDescThermal').textContent = t.tDescThermal;
+    document.getElementById('tTitleSolub').textContent = t.tTitleSolub;
+    document.getElementById('tDescSolub').textContent = t.tDescSolub;
+
+    ['Hardness', 'Fragility', 'Conduct', 'Thermal', 'Solub'].forEach(k => {
+      const btn = document.getElementById(`btnRun${k}`);
+      if (btn) btn.textContent = t.btnRun;
+    });
+
+    document.getElementById('labelBtnNewMystery').textContent = t.labelBtnNewMystery;
+
+    document.getElementById('lblPrintDate').textContent = t.lblPrintDate;
+    document.getElementById('lblPrintTime').textContent = t.lblPrintTime;
+    document.getElementById('lblStudentCard').textContent = t.lblStudentCard;
+    document.getElementById('lblStatM1').textContent = t.lblStatM1;
+    document.getElementById('lblStatM2').textContent = t.lblStatM2;
+    document.getElementById('lblStatGame').textContent = t.lblStatGame;
+    document.getElementById('lblAuditTitle').textContent = t.lblAuditTitle;
+    document.getElementById('thMode').textContent = t.thMode;
+    document.getElementById('thSubstance').textContent = t.thSubstance;
+    document.getElementById('thAnswer').textContent = t.thAnswer;
+    document.getElementById('thResult').textContent = t.thResult;
+    document.getElementById('btnCancelReport').textContent = t.btnCancelReport;
+    document.getElementById('btnPrintReport').textContent = t.btnPrintReport;
+
+    updateSimulatorLabels();
+    setupMode1();
+    setupMode2();
+    renderCandidates();
+    syncStudentName();
+  }
+
+  function syncStudentName() {
+    const val = document.getElementById('studentNameInput').value.trim();
+    document.getElementById('printStudentName').textContent = val !== '' ? val : (currentLang === 'ca' ? "(Pendent d'indicar)" : '(Pendiente de indicar)');
+  }
+
+  /* ================== PDF Report Generation ================== */
+  function openReportModal() {
+    const modal = document.getElementById('reportModal');
+    modal.classList.add('active');
+
+    const now = new Date();
+    const formattedDate = `${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
+    document.getElementById('printDateSpan').textContent = formattedDate;
+    document.getElementById('printTimeSpan').textContent = formatTimerTime(timerSeconds);
+
+    document.getElementById('statM1Score').textContent = m1Score;
+    document.getElementById('statM2Score').textContent = m2Score;
+    document.getElementById('statGameScore').textContent = gameSamplesSolved;
+
+    syncStudentName();
+    renderReportTable();
+  }
+
+  function closeReportModal() {
+    document.getElementById('reportModal').classList.remove('active');
+  }
+
+  function renderReportTable() {
+    const tbody = document.getElementById('reportTableBody');
+    tbody.innerHTML = '';
+
+    if (sessionAuditLog.length === 0) {
+      const row = document.createElement('tr');
+      row.innerHTML = `<td colspan="4" style="text-align: center; color: #64748b; padding: 1rem;">${I18N[currentLang].noRecordsText}</td>`;
+      tbody.appendChild(row);
+      return;
+    }
+
+    sessionAuditLog.forEach(entry => {
+      const row = document.createElement('tr');
+      const badge = entry.isCorrect
+        ? `<span style="color: #166534; font-weight: 700;">✓ ${currentLang === 'ca' ? 'Correcte' : 'Correcto'}</span>`
+        : `<span style="color: #991b1b; font-weight: 700;">✗ ${currentLang === 'ca' ? 'Incorrecte' : 'Incorrecto'}</span>`;
+
+      row.innerHTML = `
+        <td><strong>${entry.mode}</strong></td>
+        <td>${entry.target}</td>
+        <td>${entry.answer}</td>
+        <td>${badge} <small style="color: #64748b; margin-left: 0.35rem;">(${entry.timestamp})</small></td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  function printOfficialReport() {
+    const studentName = document.getElementById('studentNameInput').value.trim();
+    const finalStudentName = studentName !== '' ? studentName : (currentLang === 'ca' ? "Alumne/a sense identificar" : "Alumno/a sin identificar");
+    const dateStr = document.getElementById('printDateSpan').textContent;
+    const timeStr = formatTimerTime(timerSeconds);
+
+    const printWin = window.open('', '_blank');
+    if (!printWin) {
+      window.print();
+      return;
+    }
+
+    const t = I18N[currentLang];
+    let rowsHTML = '';
+    if (sessionAuditLog.length === 0) {
+      rowsHTML = `<tr><td colspan="4" style="text-align: center; padding: 12px; color: #64748b;">${t.noRecordsText}</td></tr>`;
+    } else {
+      sessionAuditLog.forEach(log => {
+        rowsHTML += `
+          <tr>
+            <td style="padding: 7px 10px; border: 1px solid #cbd5e1; font-weight: 600;">${log.mode}</td>
+            <td style="padding: 7px 10px; border: 1px solid #cbd5e1;">${log.target}</td>
+            <td style="padding: 7px 10px; border: 1px solid #cbd5e1;">${log.answer}</td>
+            <td style="padding: 7px 10px; border: 1px solid #cbd5e1; color: ${log.isCorrect ? '#166534' : '#991b1b'}; font-weight: bold;">
+              ${log.isCorrect ? '✓ Correcto' : '✗ Incorrecto'} (${log.timestamp})
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Informe - ${finalStudentName} - BAT_FQ</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding: 2.5rem; color: #0f172a; margin: 0; }
+          .report-header { border-bottom: 2px solid #4f46e5; padding-bottom: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-end; }
+          .report-header h1 { margin: 0; font-size: 1.45rem; color: #0f172a; }
+          .report-header p { margin: 0.25rem 0 0; font-size: 0.9rem; color: #64748b; }
+          .student-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; font-size: 0.95rem; line-height: 1.6; }
+          .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+          .stat-card { border: 1px solid #cbd5e1; padding: 0.85rem; border-radius: 8px; text-align: center; }
+          .stat-card strong { display: block; font-size: 1.4rem; color: #4f46e5; }
+          table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.86rem; }
+          th { background: #f1f5f9; padding: 8px 10px; border: 1px solid #cbd5e1; text-align: left; }
+          .footer-note { margin-top: 2.5rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem; font-size: 0.78rem; color: #94a3b8; text-align: center; }
+        </style>
+      </head>
+      <body>
+        <div class="report-header">
+          <div>
+            <h1>EnllaçAR - Laboratori d'Enllaç Químic i Propietats</h1>
+            <p>Física i Química (BAT_FQ) — Dpto. Física y Química — Elena Ruiz Alfaro</p>
+          </div>
+          <div style="text-align: right; font-size: 0.88rem; color: #475569;">
+            <div><strong>${t.lblPrintDate}</strong> ${dateStr}</div>
+            <div><strong>${t.lblPrintTime}</strong> ${timeStr}</div>
+          </div>
+        </div>
+
+        <div class="student-box">
+          <div><strong>${t.lblStudentCard}</strong> <span style="font-size: 1.05rem; font-weight: 700; color: #0f172a;">${finalStudentName}</span></div>
+          <div style="font-size: 0.85rem; color: #64748b; margin-top: 0.2rem;">Institut d'Ensenyaments a Distància de les Illes Balears (IEDIB)</div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <strong>${m1Score}</strong>
+            <span>${t.lblStatM1}</span>
+          </div>
+          <div class="stat-card">
+            <strong>${m2Score}</strong>
+            <span>${t.lblStatM2}</span>
+          </div>
+          <div class="stat-card">
+            <strong>${gameSamplesSolved}</strong>
+            <span>${t.lblStatGame}</span>
+          </div>
+        </div>
+
+        <h3 style="font-size: 1rem; color: #1e293b; margin-bottom: 0.5rem;">${t.lblAuditTitle}</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>${t.thMode}</th>
+              <th>${t.thSubstance}</th>
+              <th>${t.thAnswer}</th>
+              <th>${t.thResult}</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHTML}
+          </tbody>
+        </table>
+
+        <div class="footer-note">
+          © Elena Ruiz Alfaro · Document generat per l'aplicació didàctica EnllaçAR (FQ 1r de Batxillerat).
+        </div>
+      </body>
+      </html>
+    `);
+    printWin.document.close();
+    printWin.focus();
+    setTimeout(() => {
+      printWin.print();
+    }, 350);
+  }
+
+  /* ================== Initialization ================== */
+  window.addEventListener('DOMContentLoaded', () => {
+    setAppLanguage('es');
+    selectBond('ionic');
+    setupMode1();
+    setupMode2();
+    setupNewMysteryGame();
+    startTimer();
+    requestAnimationFrame(renderSimulator);
+  });
+</script>
+</body>
+</html>
